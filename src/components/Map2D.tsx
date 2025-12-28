@@ -481,6 +481,12 @@ export const Map2D: React.FC = () => {
   const [selectedAttrIds, setSelectedAttrIds] = useState<string[]>(
     project.attributes.map((a) => a.id),
   );
+  
+  const allAttrIds = project.attributes.map(a => a.id);
+  
+  const addAll =
+    selectedAttrIds.length === allAttrIds.length &&
+    allAttrIds.every(id => selectedAttrIds.includes(id));
 
   const prefMap = useMemo(() => computePrefMap(project), [project]);
   
@@ -581,6 +587,10 @@ export const Map2D: React.FC = () => {
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
+  
+  const handleAddAllToggle = (checked: boolean) => {
+    setSelectedAttrIds(checked ? allAttrIds : []);
+  };
 
   return (
     <div className="card">
@@ -633,26 +643,42 @@ export const Map2D: React.FC = () => {
   
         {/* RIGHT: SIDEBAR */}
         <div className="map-sidebar">
-          <div style={{ marginBottom: 8 }}>
-            <label style={{ fontSize: 13 }}>
-              <input
-                type="checkbox"
-                checked={showAttributes}
-                onChange={(e) => setShowAttributes(e.target.checked)}
-                style={{ marginRight: 6 }}
-              />
-              {project.lang === 'es'
-                ? 'Mostrar atributos en el mapa'
-                : 'Show attributes on map'}
-            </label>
-          </div>
-  
-          <div style={{ marginBottom: 4, fontSize: 12, fontWeight: 600 }}>
+          {/* Title */}
+          <div
+            style={{
+              marginBottom: 8,
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
             {project.lang === 'es'
               ? 'Atributos para las líneas de distancia:'
               : 'Attributes for distance lines:'}
           </div>
-  
+        
+          {/* Show all attributes */}
+          <div style={{ marginBottom: 8 }}>
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: 12,
+                fontWeight: 500,
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={addAll}
+                onChange={(e) => handleAddAllToggle(e.target.checked)}
+              />
+              {project.lang === 'es'
+                ? 'Mostrar todos los atributos en el mapa'
+                : 'Show all attributes on map'}
+            </label>
+          </div>
+        
+          {/* Attribute list */}
           <div
             style={{
               border: '1px solid #dde3ee',
@@ -660,7 +686,7 @@ export const Map2D: React.FC = () => {
               padding: 8,
               maxHeight: 260,
               overflowY: 'auto',
-              fontSize: 11,
+              fontSize: 12,
             }}
           >
             {project.attributes.map((a) => (
@@ -670,7 +696,7 @@ export const Map2D: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 6,
-                  marginBottom: 4,
+                  marginBottom: 6,
                 }}
               >
                 <input
