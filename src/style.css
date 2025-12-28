@@ -119,6 +119,46 @@ th,td {
 .hint { color:#666; }
 
 /* ===========================
+   STUDENT NAME FIELD (SCREEN)
+   =========================== */
+
+.student-name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.student-name-input {
+  min-height: 26px;
+  padding: 4px 8px;
+  border: 1px dashed #bbb;
+  border-radius: 4px;
+  cursor: text;
+  background-color: #fafafa;
+}
+
+.student-name-input:empty::before {
+  content: attr(data-placeholder);
+  color: #9a9a9a;
+  font-style: italic;
+  pointer-events: none;
+}
+
+.student-name-input:focus {
+  outline: none;
+  border-color: #888;
+  background-color: #fff;
+}
+
+/* Hide on screen, show on print */
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
+/* ===========================
    DIRECT PCA MAP (SCREEN) пока не используем
    =========================== */
 
@@ -166,7 +206,7 @@ th,td {
   outline: 2px;
 }
 
-/* только экран */ */}
+/* только экран */
 
 @media screen {
   #report-root canvas {
@@ -258,8 +298,6 @@ th,td {
     overflow: visible !important;
   }
   
-  }
-
   /* ===========================
      DIRECT MAP
      =========================== */
@@ -268,8 +306,7 @@ th,td {
     justify-content: center;
     align-items: center;
     overflow: visible;
-  }
-  
+  }  
   
   /* Small explanatory note */
   .results-grid > div:first-child div:last-child {
@@ -326,6 +363,26 @@ th,td {
     background: #f0f4ff !important;
     font-weight: 600;
   }
+  
+  /* Student name field (PRINT) */
+  .student-name-input {
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+  
+  .student-name-input:empty::before {
+    content: "";
+  }
+  
+  .student-name-print {
+    font-size: 16px;
+    margin-top: 4px;
+  }
+  
+  .student-name-value {
+    font-weight: 700;
+  }
 
   /* ===========================
      FOOTER
@@ -338,48 +395,4 @@ th,td {
     color: #666;
     text-align: center;
   }
-  
-  {
-  
-    /* 1. УБИРАЕМ GRID ТОЛЬКО В PRINT */
-    .results-grid {
-      display: block !important;
-    }
-  
-    /* 2. ВСЕ БЛОКИ — В КОЛОНКУ */
-    .results-grid > div {
-      width: 100% !important;
-      max-width: 100% !important;
-      margin-bottom: 10px;
-    }
-  
-    /* 3. ТАБЛИЦЫ МОГУТ РАСТЯГИВАТЬСЯ */
-    table {
-      width: 100% !important;
-      table-layout: auto !important;
-    }
-  
-    th, td {
-      white-space: nowrap !important;
-    }
-  
-    {
-    
-      /* ВАЖНО: вырваться из max-width */
-      .container {
-        max-width: none !important;
-        width: auto !important;
-        padding: 0 !important;
-      }
-    
-      /* report-root занимает всю страницу */
-      #report-root {
-        width: 100% !important;
-      }
-    {
-      /* Ключевой фикс для Grid: разрешаем колонкам реально сжиматься */
-      .results-grid > * {
-        min-width: 0 !important;
-      }    
-    }
-  }
+}

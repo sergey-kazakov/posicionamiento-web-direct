@@ -1,5 +1,5 @@
 // src/pages/Results.tsx
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '../store';
 import { drawPerceptualMap } from '../utils/drawPerceptualMap';
 import { t } from '../i18n';
@@ -12,6 +12,7 @@ export function Results({ setView }: Props) {
   const { project, setProject } = useApp();
   const tr = t(project.lang);
   const mapRef = useRef<HTMLCanvasElement | null>(null);
+  const [studentName, setStudentName] = useState('');
 
   const DIRECT_MAP_SIZE = 260;
   const DIRECT_MAP_PAD = 35;
@@ -96,23 +97,46 @@ export function Results({ setView }: Props) {
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center',
+              alignItems: 'flex-start',
               marginBottom: 12,
             }}
           >
-            <h3>
-              {project.lang === 'es'
-                ? 'Resultados del análisis de posicionamiento de marcas'
-                : 'Brands positioning analysis results'}
-            </h3>
-
+            {/* LEFT: title + student name */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <h3 style={{ margin: 0 }}>
+                {project.lang === 'es'
+                  ? 'Resultados del análisis de posicionamiento de marcas'
+                  : 'Brands positioning analysis results'}
+              </h3>
+          
+              <div
+                className="student-name-row"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "auto 220px",
+                  gap: "8px",
+                  alignItems: "center",
+                }}
+              >
+                <div>{tr.studentNameLabel}</div>
+                <input
+                  type="text"
+                  className="student-name-input"
+                  placeholder={tr.studentNamePlaceholder}
+                  value={studentName}
+                  onChange={(e) => setStudentName(e.target.value)}
+                />
+              </div>
+            </div>
+          
+            {/* RIGHT: actions */}
             <div style={{ display: 'flex', gap: 8 }}>
               <button className="btn btn-secondary" onClick={resetResponses}>
                 {project.lang === 'es'
                   ? 'Reiniciar respuestas'
                   : 'Reset responses'}
               </button>
-
+          
               <button className="btn" onClick={() => window.print()}>
                 PDF / Print
               </button>
@@ -134,13 +158,13 @@ export function Results({ setView }: Props) {
                 : 'Brands positioning analysis results'}
             </strong>
 
-            <div style={{ textAlign: 'right' }}>
-              <div>
-                {project.lang === 'es'
-                  ? 'Nombre del estudiante / grupo:'
-                  : 'Student / Group name:'}
+            <div>              
+              <div className="student-name-print">
+                {tr.studentNameLabel}{' '}
+                <span className="student-name-value">
+                  {studentName || '—'}
+                </span>
               </div>
-              <div>___________________________</div>
             </div>
           </div>
 

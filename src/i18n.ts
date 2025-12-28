@@ -103,6 +103,9 @@ const ES: Dict = {
   
   directPCATitle: 'Mapa PCA Directo — Paso 1: Modelo de Estado',
   
+  studentNameLabel: "Nombre del estudiante y/o grupo:",
+  studentNamePlaceholder: "Introduzca el nombre",
+  
   distToIdeal: 'Distancias a la marca IDEAL',
   benchmark: 'Marca de referencia',
   print: 'Imprimir / PDF',
@@ -168,6 +171,9 @@ const EN: Dict = {
   home: 'Home',
   
   directPCATitle: 'Direct PCA Map — Step 1: State Model',
+  
+  studentNameLabel: "Student and/or Group name:",
+  studentNamePlaceholder: "Insert name",
   
   distToIdeal: 'Distances to IDEAL brand',
   benchmark: 'Benchmark brand',
