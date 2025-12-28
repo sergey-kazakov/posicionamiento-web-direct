@@ -603,6 +603,20 @@ export const Map2D: React.FC = () => {
       <div className="map-layout">
         {/* LEFT: MAP */}
         <div className="map-canvas">
+          {project.responses.length === 0 && (
+            <div
+              style={{
+                fontSize: 12,
+                color: '#777',
+                marginBottom: 6,
+                fontStyle: 'italic',
+              }}
+            >
+              {project.lang === 'es'
+                ? 'Mapa ilustrativo. Introduzca datos de encuesta para obtener resultados significativos.'
+                : 'Illustrative map. Enter survey data to obtain meaningful results.'}
+            </div>
+          )}
           <canvas
             ref={canvasRef}
             width={900}
