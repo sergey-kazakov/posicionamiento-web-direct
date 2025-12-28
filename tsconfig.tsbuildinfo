@@ -1,0 +1,1 @@
+{"root":["./src/i18n.ts","./src/main.tsx","./src/store.tsx","./src/components/footer.tsx","./src/components/map2d.tsx","./src/pages/app.tsx","./src/pages/designer.tsx","./src/pages/home.tsx","./src/pages/results.tsx","./src/pages/survey.tsx","./src/utils/drawperceptualmap.ts","./src/utils/firebase.ts","./src/utils/mds.ts"],"version":"5.9.3"}

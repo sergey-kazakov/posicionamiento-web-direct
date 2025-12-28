@@ -1,0 +1,307 @@
+// src/pages/Results.tsx
+import React, { useEffect, useRef } from 'react';
+import { useApp } from '../store';
+import { drawPerceptualMap } from '../utils/drawPerceptualMap';
+import { t } from '../i18n';
+
+type Props = {
+  setView: (v: 'home' | 'designer' | 'survey' | 'map2d' | 'directmap' | 'results') => void;
+};
+
+export function Results({ setView }: Props) {
+  const { project, setProject } = useApp();
+  const tr = t(project.lang);
+  const mapRef = useRef<HTMLCanvasElement | null>(null);
+
+  const DIRECT_MAP_SIZE = 260;
+  const DIRECT_MAP_PAD = 35;
+
+  const prefMap = project.prefMap;
+
+  /* =========================
+     DRAW MDS MAP (CANVAS)
+     ========================= */
+  useEffect(() => {
+    if (!prefMap) return;
+
+    const canvas = mapRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    drawPerceptualMap({
+      ctx,
+      canvas,
+      project,
+      prefMap,
+      zoom: 1,
+      hoverBrandIndex: null,
+      showAttributes: true,
+      selectedAttrIds: project.attributes.map((a: any) => a.id),
+    });
+  }, [prefMap, project.lang]);
+
+  /* =========================
+     RESET RESPONSES
+     ========================= */
+  function resetResponses() {
+    const msg =
+      project.lang === 'es'
+        ? '¿Reiniciar todas las respuestas?'
+        : 'Reset all responses?';
+
+    if (!window.confirm(msg)) return;
+
+    setProject((prev) => ({
+      ...prev,
+      responses: [],
+      prefMap: undefined,
+      results: [],
+    }));
+
+    setView('home');
+  }
+
+  /* =========================
+     DIRECT MAP (LAST SELECTED)
+     ========================= */
+  const directMap = Array.isArray(project.results)
+    ? project.results.filter((r: any) => r.type === 'direct-attributes').at(-1)
+    : null;
+
+  /* =========================
+     RENDER
+     ========================= */
+  return (
+    <div id="report-root" className="card">
+      {!prefMap ? (
+        /* ===== EMPTY STATE ===== */
+        <div style={{ padding: 16 }}>
+          <p>
+            {project.lang === 'es'
+              ? 'No hay resultados. Inicie un nuevo análisis.'
+              : 'No results available. Please start a new analysis.'}
+          </p>
+
+          <button className="btn" onClick={() => setView('home')}>
+            {project.lang === 'es' ? 'Volver al inicio' : 'Back to home'}
+          </button>
+        </div>
+      ) : (
+        /* ===== RESULTS CONTENT ===== */
+        <div>
+          {/* ===== HEADER (SCREEN) ===== */}
+          <div
+            className="print-hide"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: 12,
+            }}
+          >
+            <h3>
+              {project.lang === 'es'
+                ? 'Resultados del análisis de posicionamiento de marcas'
+                : 'Brands positioning analysis results'}
+            </h3>
+
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button className="btn btn-secondary" onClick={resetResponses}>
+                {project.lang === 'es'
+                  ? 'Reiniciar respuestas'
+                  : 'Reset responses'}
+              </button>
+
+              <button className="btn" onClick={() => window.print()}>
+                PDF / Print
+              </button>
+            </div>
+          </div>
+
+          {/* ===== HEADER (PRINT) ===== */}
+          <div
+            className="print-only"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              marginBottom: 16,
+            }}
+          >
+            <strong>
+              {project.lang === 'es'
+                ? 'Resultados del análisis de posicionamiento de marcas'
+                : 'Brands positioning analysis results'}
+            </strong>
+
+            <div style={{ textAlign: 'right' }}>
+              <div>
+                {project.lang === 'es'
+                  ? 'Nombre del estudiante / grupo:'
+                  : 'Student / Group name:'}
+              </div>
+              <div>___________________________</div>
+            </div>
+          </div>
+
+          {/* ===== MDS MAP ===== */}
+          <div style={{ marginBottom: 16 }}>
+            <canvas
+              ref={mapRef}
+              width={900}
+              height={350}
+              style={{
+                width: '100%',
+                height: 'auto',
+                aspectRatio: '900 / 350',
+              }}
+            />
+          </div>
+
+          {/* ===== RESULTS GRID ===== */}
+          <div
+            className="grid results-grid"
+            style={{
+              gridTemplateColumns: '260px 1fr 1fr',
+              gap: 24,
+              alignItems: 'start',
+            }}
+          >
+            {/* === DIRECT MAP === */}
+            <div>
+              <h4>
+                {project.lang === 'es'
+                  ? 'Mapa directo seleccionado'
+                  : 'Selected direct map'}
+              </h4>
+
+              {directMap ? (
+                <>
+                  <svg
+                    width={DIRECT_MAP_SIZE}
+                    height={DIRECT_MAP_SIZE}
+                    viewBox={`-${DIRECT_MAP_PAD} -${DIRECT_MAP_PAD} ${
+                      DIRECT_MAP_SIZE + DIRECT_MAP_PAD * 2
+                    } ${DIRECT_MAP_SIZE + DIRECT_MAP_PAD * 2}`}
+                  >
+                    <line x1="0" y1="260" x2="300" y2="260" stroke="#000" />
+                    <line x1="0" y1="0" x2="0" y2="260" stroke="#000" />
+
+                    {directMap.points.map((p: any, i: number) => {
+                      const x = p.x * DIRECT_MAP_SIZE;
+                      const y = DIRECT_MAP_SIZE - p.y * DIRECT_MAP_SIZE;
+
+                      return (
+                        <g key={i}>
+                          <circle
+                            cx={x}
+                            cy={y}
+                            r={3.5}
+                            fill={p.isIdeal ? '#999' : '#0d1b2a'}
+                          />
+                          <text
+                            x={x + 6}
+                            y={y - 4}
+                            fontSize={9}
+                            fill="#111"
+                          >
+                            {p.name}
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                </>
+              ) : (
+                <div style={{ fontSize: 12, color: '#777' }}>
+                  {project.lang === 'es'
+                    ? 'No se ha seleccionado ningún mapa directo.'
+                    : 'No direct map has been selected.'}
+                </div>
+              )}
+            </div>
+
+            {/* === PERFORMANCE MEANS === */}
+            <div>
+              <h4>
+                {project.lang === 'es'
+                  ? 'Medias de desempeño'
+                  : 'Performance means'}
+              </h4>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>{tr.brand}</th>
+                    {project.attributes.map((a: any) => (
+                      <th key={a.id}>
+                        {project.lang === 'es' ? a.labelEs : a.labelEn}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {prefMap.tables.performanceMeans.map((row: any, i: number) => (
+                    <tr key={i}>
+                      <td>{row.brand}</td>
+                      {row.values.map((v: number, j: number) => (
+                        <td key={j} className="num">
+                          {v.toFixed(2)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* === SENSITIVITY + DISTANCES === */}
+            <div>
+              <h4>
+                {project.lang === 'es'
+                  ? 'Sensibilidad de atributos'
+                  : 'Attribute sensitivity'}
+              </h4>
+
+              <table>
+                <tbody>
+                  {prefMap.tables.attributeSensitivity.map(
+                    (row: any, i: number) => (
+                      <tr key={i}>
+                        <td>{row.attribute}</td>
+                        <td className="num">
+                          {row.magnitude.toFixed(2)}
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+
+              <h4 style={{ marginTop: 16 }}>
+                {project.lang === 'es'
+                  ? 'Distancias a la marca IDEAL'
+                  : 'Distances to IDEAL brand'}
+              </h4>
+
+              <table>
+                <tbody>
+                  {prefMap.tables.distancesToIdeal.map(
+                    (row: any, i: number) => (
+                      <tr key={i}>
+                        <td>{row.brand}</td>
+                        <td className="num">
+                          {row.distance.toFixed(3)}
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

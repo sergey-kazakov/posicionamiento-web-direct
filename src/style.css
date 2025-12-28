@@ -1,0 +1,385 @@
+:root {
+  --navy:#0D1B2A; /* #0077C8 UAH Corporate*/
+  --turquoise:#2CAFBF;
+  --grid:#E8EEF3;
+  --border:#DDE6EE;
+  
+  --map-sidebar-width: 240px;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  font-family:Inter,system-ui,Arial,sans-serif;
+  color:#111;
+  background:#f7f9fc;
+}
+
+header {
+  background:var(--navy);
+  color:#fff;
+  padding:12px 20px;
+  position:sticky;
+  top:0;
+  z-index:3;
+}
+
+footer {
+  background: var(--navy);
+  color: #fff;
+  padding: 0px 0;
+  margin-top: 24px;
+}
+
+footer .container {
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.container {
+  max-width:1200px;
+  margin:0 auto;
+  padding:18px;
+}
+
+.btn {
+  background:#0077C8;
+  border:none;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn:hover { background:#0066CC; }
+.btn:disabled { opacity:.6; cursor:not-allowed; }
+
+.grid { display:flex; gap:12px; flex-wrap:wrap; }
+
+.card {
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.06);
+  background:#fff;
+}
+
+.uah-logo {
+  background: #ffffff;
+  color: #0077C8;
+  border: 2px solid #0077C8;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+canvas {
+  background:#fff;
+  border:1px dashed var(--grid);
+  border-radius:8px;
+}
+
+input,select,textarea {
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #ddd;
+}
+
+table {
+  border-collapse:collapse;
+  width:100%;
+}
+td.num,
+th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+th,td {
+  border:1px solid #eee;
+  padding:8px;
+  font-size:14px;
+}
+
+.badge {
+  padding:2px 8px;
+  border-radius:999px;
+  background:#eef;
+  color:#334;
+}
+
+.hint { color:#666; }
+
+/* ===========================
+   DIRECT PCA MAP (SCREEN) пока не используем
+   =========================== */
+
+/*
+.direct-pca-page {
+  width: 100%;
+  max-width: none;
+  padding: 18px;
+}
+
+.direct-pca-page h2 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.direct-pca-map-slot {
+  width: 100%;
+  height: 480px;          // фиксируем геометрию
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: visible;      // принципиально
+}
+*/
+
+/* ===========================
+   MAP 2D LAYOUT (RIGHT SIDEBAR)
+   =========================== */
+
+.map-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.map-canvas {
+  flex: 1;
+}
+
+.map-sidebar {
+  outline: 2px;
+}
+
+/* только экран */ */}
+
+@media screen {
+  #report-root canvas {
+    height: 320px;
+  }
+}
+
+@media screen {
+  .print-only {
+    display: none;
+  }
+}
+
+/* ===========================
+   PRINT LAYOUT – RESULTS
+   =========================== */
+
+@media print {
+
+  /* --- Page setup --- */
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  /* --- Hide screen-only elements --- */
+  .print-hide,
+  button,
+  .btn {
+    display: none !important;
+  }
+
+  /* --- Force print-only blocks --- */
+  .print-only {
+    display: block !important;
+  }
+
+  /* --- Report root --- */
+  #report-root {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* ===========================
+     HEADER
+     =========================== */
+
+  h3, h4 {
+    margin: 0 0 6px 0;
+  }
+
+  h4 {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* ===========================
+     PCA MAP (TOP)
+     =========================== */
+
+  canvas {
+    width: auto !important;
+    height: auto !important;
+    max-width: 480px !important;
+    max-height: 280px !important;
+    aspect-ratio: auto !important;
+    display: block;
+    margin: 0 auto 10px auto;
+  }
+
+  /* ===========================
+     MAIN GRID (BOTTOM)
+     =========================== */
+
+  .results-grid {
+    display: grid !important;
+    grid-template-columns: 300px 1fr 220px !important;
+    gap: 12px !important;
+    align-items: start !important;
+  }
+      
+  .results-grid > div:nth-child(2),
+  .results-grid > div:nth-child(3) {
+    overflow: visible !important;
+  }
+  
+  }
+
+  /* ===========================
+     DIRECT MAP
+     =========================== */
+  .direct-map-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+  }
+  
+  
+  /* Small explanatory note */
+  .results-grid > div:first-child div:last-child {
+    font-size: 10px;
+    color: #555;
+    margin-top: 6px;
+  }
+  
+  /* === FIX: Direct map must never be clipped === */
+  .direct-map-wrapper {
+    overflow: visible !important;
+  }
+  
+  .direct-map-wrapper svg {
+    overflow: visible !important;
+  }
+
+  /* ===========================
+     TABLES
+     =========================== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto !important;
+    font-size: 10.5px;
+  }
+
+  th {
+    background: #f3f5f8 !important;
+    font-weight: 600;
+    border: 1px solid #ccc;
+    padding: 4px 6px;
+  }
+
+  td {
+    border: 1px solid #ccc;
+    padding: 3px 6px;
+  }
+
+  td.num,
+  th.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  th, td {
+    word-break: normal;
+    white-space: nowrap;
+  }
+
+  /* Ideal brand highlight */
+  .ideal-row {
+    background: #f0f4ff !important;
+    font-weight: 600;
+  }
+
+  /* ===========================
+     FOOTER
+     =========================== */
+
+  footer,
+  .footer {
+    margin-top: 10px;
+    font-size: 9px;
+    color: #666;
+    text-align: center;
+  }
+  
+  {
+  
+    /* 1. УБИРАЕМ GRID ТОЛЬКО В PRINT */
+    .results-grid {
+      display: block !important;
+    }
+  
+    /* 2. ВСЕ БЛОКИ — В КОЛОНКУ */
+    .results-grid > div {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-bottom: 10px;
+    }
+  
+    /* 3. ТАБЛИЦЫ МОГУТ РАСТЯГИВАТЬСЯ */
+    table {
+      width: 100% !important;
+      table-layout: auto !important;
+    }
+  
+    th, td {
+      white-space: nowrap !important;
+    }
+  
+    {
+    
+      /* ВАЖНО: вырваться из max-width */
+      .container {
+        max-width: none !important;
+        width: auto !important;
+        padding: 0 !important;
+      }
+    
+      /* report-root занимает всю страницу */
+      #report-root {
+        width: 100% !important;
+      }
+    {
+      /* Ключевой фикс для Grid: разрешаем колонкам реально сжиматься */
+      .results-grid > * {
+        min-width: 0 !important;
+      }    
+    }
+  }
