@@ -50,17 +50,19 @@ export function Results({ setView }: Props) {
       project.lang === 'es'
         ? '¿Reiniciar todas las respuestas?'
         : 'Reset all responses?';
-
+  
     if (!window.confirm(msg)) return;
-
-    setProject((prev) => ({
+  
+    setProject(prev => ({
       ...prev,
       responses: [],
       prefMap: undefined,
       results: [],
+      directMapByAttributes: {
+        selectedAttrIds: [],
+        activePair: null,
+      },
     }));
-
-    setView('home');
   }
 
   /* =========================
