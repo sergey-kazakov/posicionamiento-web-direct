@@ -62,6 +62,31 @@ export default function DirectMapByAttributes() {
 	  },
 	}));
 	}
+	
+	function addToResults() {
+	  if (!activePair || points.length === 0) return;
+	
+	  const payload = {
+		type: 'direct-attributes',
+		attributes: activePair,
+		points,
+		label: `Direct map: ${attrLabel(activePair[0])} × ${attrLabel(activePair[1])}`,
+		createdAt: Date.now(),
+	  };
+	
+	  setProject(prev => {
+		const results = (prev as any).results || [];
+	
+		return {
+		  ...prev,
+		  results: [...results, payload],
+		  directMapByAttributes: {
+			selectedAttrIds: [],
+			activePair: null,
+		  },
+		};
+	  });
+	}
 
   function generatePairs(ids: string[]): [string, string][] {
 	const res: [string, string][] = [];
@@ -133,27 +158,7 @@ export default function DirectMapByAttributes() {
   function clamp(v: number, min: number, max: number) {
 	return Math.max(min, Math.min(max, v));
   }
-  
-  function addToResults() {
-	if (!activePair || points.length === 0) return;
-  
-	const payload = {
-	  type: 'direct-attributes',
-	  attributes: activePair,   // [attrIdX, attrIdY]
-	  points,                   // то, что студент реально видит
-	  label: `Direct map: ${attrLabel(activePair[0])} × ${attrLabel(activePair[1])}`,
-	  createdAt: Date.now(),
-	};
-  
-	// минимально-инвазивно: складируем в project
-	(project as any).results = (project as any).results || [];
-	(project as any).results.push(payload);
-  
-	// временно, чтобы ты видел, что сработало
-	console.log('Added to Results:', payload);
-	alert('Direct map added to Results');
-  }
-
+    
   // ---------- SVG GEOMETRY ----------
   // Простой подход: фиксированные размеры в пикселях, без viewBox
   const SVG_SIZE = 400; // Размер SVG в пикселях (оптимальный для экрана)
