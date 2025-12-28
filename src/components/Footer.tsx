@@ -4,7 +4,8 @@ import { useApp } from "../store";
 import { t } from '../i18n';
 
 export default function Footer() {
-  const { lang } = useApp();
+  const { project } = useApp();
+  const lang = project.lang;
   const tr = t(lang);
 
   return (

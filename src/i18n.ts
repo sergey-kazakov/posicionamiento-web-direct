@@ -47,6 +47,14 @@ type Dict = {
   mapSummaryTitle: string;
   
   footerText: string;
+  
+  home: string;
+  directAttributesMap: string;
+  directPCAMap: string;
+  directPCATitle: string;
+  
+  studentNameLabel: string;
+  studentNamePlaceholder: string;
 };
 
 const ES: Dict = {

@@ -28,37 +28,31 @@ export type Project = {
   attributes: Attribute[];
   benchmark?: string;
   responses: SurveyResponse[];
+  results?: any[];
 
-  directMap?: {
-	selectedAttributeIds: string[];
-	activePair?: [string, string];
-	
   directMapByAttributes?: {
-    selectedAttrIds: string[];
+	selectedAttrIds: string[];
 	activePair: [string, string] | null;
-	};
   };
-  
+
   prefMap?: {
-	// Геометрия карты
 	brandCoords: number[][];
 	attrCoords: number[][];
 	idealIndex: number | null;
-  
-	// Таблицы для Results (read-only)
+
 	tables: {
 	  performanceMeans: {
 		brand: string;
 		values: number[];
 	  }[];
-  
+
 	  attributeSensitivity: {
 		attribute: string;
 		loadingX: number;
 		loadingY: number;
 		magnitude: number;
 	  }[];
-  
+
 	  distancesToIdeal: {
 		brand: string;
 		distance: number;
@@ -97,6 +91,7 @@ const seed: Project = {
   ],
   benchmark: 'IDEAL',
   responses: [],
+  results: [],
 };
 
 /* ========= Context ========= */

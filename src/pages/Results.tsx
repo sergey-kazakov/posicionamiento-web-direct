@@ -68,9 +68,10 @@ export function Results({ setView }: Props) {
   /* =========================
      DIRECT MAP (LAST SELECTED)
      ========================= */
-  const directMap = Array.isArray(project.results)
-    ? project.results.filter((r: any) => r.type === 'direct-attributes').at(-1)
-    : null;
+  const directResults = project.results.filter(
+    (r: any) => r.type === 'direct-attributes'
+  );
+  const lastDirect = directResults[directResults.length - 1];
 
   /* =========================
      RENDER
@@ -201,7 +202,7 @@ export function Results({ setView }: Props) {
                   : 'Selected direct map'}
               </h4>
 
-              {directMap ? (
+              {lastDirect ? (
                 <>
                   <svg
                     width={DIRECT_MAP_SIZE}
@@ -213,7 +214,7 @@ export function Results({ setView }: Props) {
                     <line x1="0" y1="260" x2="300" y2="260" stroke="#000" />
                     <line x1="0" y1="0" x2="0" y2="260" stroke="#000" />
 
-                    {directMap.points.map((p: any, i: number) => {
+                    {lastDirect.points.map((p: any, i: number) => {
                       const x = p.x * DIRECT_MAP_SIZE;
                       const y = DIRECT_MAP_SIZE - p.y * DIRECT_MAP_SIZE;
 

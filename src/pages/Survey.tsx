@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../store';
 import { t } from '../i18n';
-//import QRCode from 'qrcode.react';
+/* import QRCode from 'qrcode.react'; */
 import { fbInit, fbPushResponse } from '../utils/firebase';
 
 type PerfState = Record<string, Record<string, number>>; // brand -> attrId -> 1..5
@@ -189,17 +189,17 @@ export function Survey() {
         </div>
 
         {/* QR (пока выключен) */}
-        {false && (
+        {/* {false && (
           <div>
             <div className="card" style={{ display: 'inline-block' }}>
               <div style={{ fontWeight: 700, marginBottom: 6 }}>QR</div>
-              <QRCode value={shareUrl} size={140} />
+              {false && <QRCode value={shareUrl} size={140} />}
               <div style={{ fontSize: 12, maxWidth: 220, wordBreak: 'break-all' }}>
                 {shareUrl}
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
 
       <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
