@@ -495,7 +495,13 @@ export const Map2D: React.FC = () => {
   }, [prefMap, setProject]);
   
   useEffect(() => {
-    setSelectedAttrIds(project.attributes.map((a) => a.id));
+    const ids = project.attributes.map((a) => a.id);
+  
+    setSelectedAttrIds((prev) =>
+      prev.length === ids.length && prev.every((v, i) => v === ids[i])
+        ? prev
+        : ids
+    );
   }, [project.attributes]);
 
   useEffect(() => {

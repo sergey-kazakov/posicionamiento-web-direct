@@ -131,7 +131,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }
 
   const [project, setProjectState] = useState<Project>(initialProject);
-
+  
   function setProject(
 	updater: Project | ((prev: Project) => Project)
   ) {
@@ -142,6 +142,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 		  : updater;
   
 	  if (!next || typeof next !== 'object') return prev;
+  
+	  // 🔒 idempotency guard — КЛЮЧЕВОЕ МЕСТО
+	  if (JSON.stringify(prev) === JSON.stringify(next)) {
+		return prev;
+	  }
   
 	  localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
 	  return next;

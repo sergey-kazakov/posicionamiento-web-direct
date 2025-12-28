@@ -9,11 +9,13 @@ type Point = {
   isIdeal: boolean;
 };
 
+const EMPTY_ARRAY: string[] = [];
+
 export default function DirectMapByAttributes() {
   const { project, setProject } = useApp();
   
   const selectedAttrIds =
-	project.directMapByAttributes?.selectedAttrIds ?? [];
+  project.directMapByAttributes?.selectedAttrIds ?? EMPTY_ARRAY;
   
   const activePair =
 	project.directMapByAttributes?.activePair ?? null;
