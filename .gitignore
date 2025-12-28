@@ -1,5 +1,10 @@
-node_modules/
-dist/
-.DS_Store
-.DS_Store
+# Experimental / sandbox components
+src/components/Map2D_new.tsx
+src/components/Map2D_ new.tsx
+
+# Build artifacts
+dist
+node_modules
+
+# OS / editor
 .DS_Store
