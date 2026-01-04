@@ -54,6 +54,22 @@ footer .container {
   font-weight:600;
 }
 
+.btn-soft {
+  background: #E6F0FB;
+  color: #0B3C78;
+  border: 1px solid #A7C7ED;
+}
+
+.btn-soft:hover:not(:disabled) {
+  background: #D6E8FA;
+}
+
+.btn-soft:disabled {
+  background: #EDF3FA;
+  color: #9BB3CF;
+  border-color: #D6E0EE;
+}
+
 .btn:hover { background:#0066CC; }
 .btn:disabled { opacity:.6; cursor:not-allowed; }
 

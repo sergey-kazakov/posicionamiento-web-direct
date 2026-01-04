@@ -129,9 +129,65 @@ export function Survey() {
       : 'Overall, how much would you prefer this brand? (1–5)';
 
   return (
-    <div className="card">
-      <h3>{tr.survey}</h3>
-
+  <>
+    {/* --- SURVEY HEADER / TOOLBAR --- */}
+    <div style={{ marginTop: 24, marginBottom: 16 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        <h3 style={{ margin: 0 }}>{tr.survey}</h3>
+    
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          {/* Import survey results (future) */}
+          <button
+            className="btn btn-soft"
+            disabled
+            title={
+              project.lang === "es"
+                ? "Importa resultados reales de una encuesta. Los valores se calculan automáticamente y no pueden editarse manualmente. El reset se realiza en la página de resultados."
+                : "Import real survey results. Values are calculated automatically and cannot be edited manually. Reset is available on the Results page."
+            }
+          >
+            {project.lang === "es"
+              ? "Importar resultados de encuesta"
+              : "Import survey results"}
+          </button>
+    
+          {/* Export JSON */}
+          <button
+            className="btn btn-soft"
+            onClick={() => console.log("Export JSON (sandbox state)")}
+            title={
+              project.lang === "es"
+                ? "Guarda el estado actual del ejercicio para reutilizarlo o compartirlo."
+                : "Save the current exercise state to reuse or share it."
+            }
+          >
+            {project.lang === "es" ? "Exportar JSON" : "Export JSON"}
+          </button>
+    
+          {/* Import JSON */}
+          <button
+            className="btn btn-soft"
+            onClick={() => console.log("Import JSON (sandbox state)")}
+            title={
+              project.lang === "es"
+                ? "Carga un estado guardado previamente y restaura los valores."
+                : "Load a previously saved state and restore the values."
+            }
+          >
+            {project.lang === "es" ? "Importar JSON" : "Import JSON"}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+      {/* --- MAIN GRID --- */}
       <div className="grid">
         {/* Блок performance + preference */}
         <div>
@@ -157,6 +213,7 @@ export function Survey() {
                       max={5}
                       step={1}
                       value={v}
+                      disabled={hasImportedData}
                       onChange={(e) => setPerfValue(b.name, a.id, parseInt(e.target.value))}
                     />
                     <span style={{ width: 18, textAlign: 'center' }}>{v}</span>
@@ -182,6 +239,7 @@ export function Survey() {
                   max={5}
                   step={1}
                   value={pref[b.name] ?? 3}
+                  disabled={hasImportedData}
                   onChange={(e) => setPrefValue(b.name, parseInt(e.target.value))}
                 />
                 <span style={{ width: 18, textAlign: 'center' }}>{pref[b.name] ?? 3}</span>
@@ -208,7 +266,7 @@ export function Survey() {
                   : "Sandbox mode: values can be edited manually.")}
           </div>
         </div>
-
+     
         {/* QR (пока выключен) */}
         {/* {false && (
           <div>
@@ -228,6 +286,6 @@ export function Survey() {
           {tr.submit}
         </button> */}
       </div>
-    </div>
+    </>
   );
 }
