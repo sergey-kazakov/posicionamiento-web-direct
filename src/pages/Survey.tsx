@@ -128,6 +128,61 @@ export function Survey() {
       ? 'En general, ¿hasta qué punto preferirías esta marca? (1–5)'
       : 'Overall, how much would you prefer this brand? (1–5)';
 
+  const exportJSON = () => {
+    const payload = {
+      version: 1,
+      dataSource,
+      performance: perf,
+      preference: pref,
+      meta: {
+        projectId: project.id,
+        brands: project.brands.map(b => b.name),
+        attributes: project.attributes.map(a => a.id),
+        timestamp: Date.now(),
+      },
+    };
+  
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+  
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `survey_sandbox_${project.id}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  
+  const handleImportJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(String(reader.result));
+  
+        if (
+          data.version !== 1 ||
+          !data.performance ||
+          !data.preference
+        ) {
+          alert("Invalid JSON format");
+          return;
+        }
+  
+        setPerf(data.performance);
+        setPref(data.preference);
+        setDataSource("manual");
+  
+      } catch {
+        alert("Failed to read JSON file");
+      }
+    };
+    reader.readAsText(file);
+  };
+  
   return (
   <>
     {/* --- SURVEY HEADER / TOOLBAR --- */}
@@ -161,7 +216,7 @@ export function Survey() {
           {/* Export JSON */}
           <button
             className="btn btn-soft"
-            onClick={() => console.log("Export JSON (sandbox state)")}
+            onClick={exportJSON}
             title={
               project.lang === "es"
                 ? "Guarda el estado actual del ejercicio para reutilizarlo o compartirlo."
@@ -172,9 +227,17 @@ export function Survey() {
           </button>
     
           {/* Import JSON */}
+          <input
+            type="file"
+            accept="application/json"
+            style={{ display: "none" }}
+            id="import-json-input"
+            onChange={handleImportJSON}
+          />
+          
           <button
             className="btn btn-soft"
-            onClick={() => console.log("Import JSON (sandbox state)")}
+            onClick={() => document.getElementById("import-json-input")?.click()}
             title={
               project.lang === "es"
                 ? "Carga un estado guardado previamente y restaura los valores."
