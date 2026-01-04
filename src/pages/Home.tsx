@@ -15,7 +15,9 @@ export function Home() {
 		• {tr.map2d}
 		{' '}• {tr.designer}
 		{' '}• {tr.survey}
-		{' '}• {tr.results}
+		{' '}• {tr.map2d}
+		{' '}• {tr.directAttributesMap}
+		{' '}• {tr.results} •
 	  </p>
 
 	  {/* Новая мини-инструкция с приветствием */}
