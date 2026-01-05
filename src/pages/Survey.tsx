@@ -2,8 +2,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../store';
 import { t } from '../i18n';
-/* import QRCode from 'qrcode.react'; */
-{/* import { fbInit, fbPushResponse } from '../utils/firebase'; */}
+// import QRCode from 'qrcode.react';
+// import { fbInit, fbPushResponse } from '../utils/firebase';
 
 type PerfState = Record<string, Record<string, number>>; // brand -> attrId -> 1..5
 type PrefState = Record<string, number>;                  // brand -> 1..5
@@ -129,16 +129,20 @@ export function Survey() {
       : 'Overall, how much would you prefer this brand? (1–5)';
 
   const exportJSON = () => {
-    const payload = {
-      version: 1,
-      dataSource,
+    const sandboxResponse = {
       performance: perf,
       preference: pref,
+      ts: Date.now(),
+    };
+  
+    const payload = {
+      version: 2,
+      responses: [sandboxResponse],
       meta: {
         projectId: project.id,
         brands: project.brands.map(b => b.name),
         attributes: project.attributes.map(a => a.id),
-        timestamp: Date.now(),
+        exportedAt: Date.now(),
       },
     };
   
@@ -149,7 +153,7 @@ export function Survey() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `survey_sandbox_${project.id}.json`;
+    a.download = `survey_responses_${project.id}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -163,23 +167,32 @@ export function Survey() {
       try {
         const data = JSON.parse(String(reader.result));
   
-        if (
-          data.version !== 1 ||
-          !data.performance ||
-          !data.preference
-        ) {
-          alert("Invalid JSON format");
+        if (data.version !== 2 || !Array.isArray(data.responses)) {
+          alert("Invalid JSON format (expected version 2)");
           return;
         }
   
-        setPerf(data.performance);
-        setPref(data.preference);
-        setDataSource("manual");
+        const responses = data.responses;
   
-      } catch {
+        // 1) кладём responses → Map2D
+        setProject((prev) => ({
+          ...prev,
+          responses,
+        }));
+        
+        // 2) агрегируем → показываем в бегунках
+        const { perf, pref } = aggregateResponses(responses);
+        setPerf(perf);
+        setPref(pref);
+        
+        // 3) переключаем режим Survey
+        setDataSource("imported");        
+  
+      } catch (err) {
         alert("Failed to read JSON file");
       }
     };
+  
     reader.readAsText(file);
   };
   
@@ -190,11 +203,51 @@ export function Survey() {
       ts: Date.now(),
     };
   
-    setProject({
-      ...project,
+    setProject((prev) => ({
+      ...prev,
       responses: [sandboxResponse],
-      dataSource: "manual",
+    }));
+  
+    setDataSource("manual");
+  };
+  
+  const aggregateResponses = (responses: any[]) => {
+    const perfAgg: any = {};
+    const prefAgg: any = {};
+  
+    if (!responses.length) return { perfAgg, prefAgg };
+  
+    responses.forEach((r) => {
+      Object.entries(r.performance || {}).forEach(([brand, attrs]: any) => {
+        if (!perfAgg[brand]) perfAgg[brand] = {};
+        Object.entries(attrs).forEach(([attrId, val]: any) => {
+          if (!perfAgg[brand][attrId]) perfAgg[brand][attrId] = [];
+          perfAgg[brand][attrId].push(val);
+        });
+      });
+  
+      Object.entries(r.preference || {}).forEach(([brand, val]: any) => {
+        if (!prefAgg[brand]) prefAgg[brand] = [];
+        prefAgg[brand].push(val);
+      });
     });
+  
+    const perf: any = {};
+    Object.entries(perfAgg).forEach(([brand, attrs]: any) => {
+      perf[brand] = {};
+      Object.entries(attrs).forEach(([attrId, vals]: any) => {
+        perf[brand][attrId] =
+          Math.round(vals.reduce((s: number, x: number) => s + x, 0) / vals.length);
+      });
+    });
+  
+    const pref: any = {};
+    Object.entries(prefAgg).forEach(([brand, vals]: any) => {
+      pref[brand] =
+        Math.round(vals.reduce((s: number, x: number) => s + x, 0) / vals.length);
+    });
+  
+    return { perf, pref };
   };
   
   return (
@@ -356,11 +409,11 @@ export function Survey() {
           <div style={{ fontSize: 13, marginTop: 6, color: "#555" }}>
             {hasImportedData
               ? (project.lang === "es"
-                  ? "Datos importados. La edición manual está desactivada."
-                  : "Imported data. Manual editing is disabled.")
+                  ? "Datos importados. La edición manual está desactivada. El reset se realiza en la página de resultados o despúes de ver el mapa de posicionamiento en la proxima pagina."
+                  : "Imported data. Manual editing is disabled. Reset is available on the Results page or after viewing the Positioning Map.")
               : (project.lang === "es"
-                  ? "Modo sandbox: los valores pueden editarse manualmente. Haz clic en «Aplicar al mapa» para generar los mapas."
-                  : "Sandbox mode: values can be edited manually. Click on “Apply to map” to generate the maps.")}
+                  ? "Modo sandbox: los valores pueden editarse manualmente. Haz clic en «Aplicar al mapa» para generar los mapas. El reset se realiza en la página de resultados."
+                  : "Sandbox mode: values can be edited manually. Click on “Apply to map” to generate the maps. Reset is available on the Results page.")}
           </div>
         </div>
      
