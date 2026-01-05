@@ -183,21 +183,29 @@ export function Survey() {
     reader.readAsText(file);
   };
   
+  const applyToMap = () => {
+    setProject({
+      ...project,
+      performance: perf,
+      preference: pref,
+    });
+  };
+  
   return (
   <>
     {/* --- SURVEY HEADER / TOOLBAR --- */}
-    <div style={{ marginTop: 24, marginBottom: 16 }}>
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: 16 }}>
       <div
         style={{
           display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
-          gap: 12,
-          flexWrap: "wrap",
+          gap: 16,
         }}
       >
-        <h3 style={{ margin: 0 }}>{tr.survey}</h3>
+        <h2 style={{ margin: 0 }}>{tr.survey}</h2>
     
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 8 }}>
           {/* Import survey results (future) */}
           <button
             className="btn btn-soft"
@@ -213,6 +221,19 @@ export function Survey() {
               : "Import survey results"}
           </button>
     
+          <button
+            className="btn btn-soft"
+            onClick={applyToMap}
+            disabled={hasImportedData}
+            title={
+              project.lang === "es"
+                ? "Aplica los valores actuales entregados por el mano y recalcula los mapas."
+                : "Apply current manually input values and recalculate the maps."
+            }
+          >
+            {project.lang === "es" ? "Aplicar al mapa" : "Apply to map"}
+          </button>
+          
           {/* Export JSON */}
           <button
             className="btn btn-soft"
@@ -251,7 +272,14 @@ export function Survey() {
     </div>
     
       {/* --- MAIN GRID --- */}
-      <div className="grid">
+      {/* --- MAIN LAYOUT (NO CSS) --- */}
+      <div
+        style={{
+          display: "flex",
+          gap: 20,
+          alignItems: "flex-start",
+        }}
+      >
         {/* Блок performance + preference */}
         <div>
           <h4>{tr.performance}</h4>
@@ -325,8 +353,8 @@ export function Survey() {
                   ? "Datos importados. La edición manual está desactivada."
                   : "Imported data. Manual editing is disabled.")
               : (project.lang === "es"
-                  ? "Modo sandbox: los valores pueden editarse manualmente."
-                  : "Sandbox mode: values can be edited manually.")}
+                  ? "Modo sandbox: los valores pueden editarse manualmente. Haz clic en «Aplicar al mapa» para generar los mapas."
+                  : "Sandbox mode: values can be edited manually. Click on “Apply to map” to generate the maps.")}
           </div>
         </div>
      
