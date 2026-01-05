@@ -184,10 +184,16 @@ export function Survey() {
   };
   
   const applyToMap = () => {
-    setProject({
-      ...project,
+    const sandboxResponse = {
       performance: perf,
       preference: pref,
+      ts: Date.now(),
+    };
+  
+    setProject({
+      ...project,
+      responses: [sandboxResponse],
+      dataSource: "manual",
     });
   };
   

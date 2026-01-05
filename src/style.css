@@ -73,7 +73,7 @@ footer .container {
 .btn:hover { background:#0066CC; }
 .btn:disabled { opacity:.6; cursor:not-allowed; }
 
-//.grid { display:flex; gap:12px; flex-wrap:wrap; }
+.grid { display:flex; gap:12px; flex-wrap:wrap; }
 
 .card {
   border:1px solid var(--border);
