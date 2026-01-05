@@ -176,11 +176,11 @@ export default function DirectMapByAttributes() {
 
   return (
 	<div className="page">
-	  <h1 style={{ marginBottom: -2 }}>
+	  <h3 style={{ marginBottom: -2 }}>
 		{project.lang === 'es'
 		  ? 'Mapa directo por atributos'
 		  : 'Direct Map by Attributes'}
-	  </h1>
+	  </h3>
 	  
 	  <div
 		style={{
@@ -233,11 +233,11 @@ export default function DirectMapByAttributes() {
 	  >
 		{/* LEFT — ATTRIBUTE SELECTION */}
 		<div>
-		  <h3>
+		  <h4>
 			{project.lang === 'es'
 			  ? 'Seleccione exactamente 4 atributos'
 			  : 'Select exactly 4 attributes'}
-		  </h3>
+		  </h4>
 
 		  {attributes.map((a: any) => {
 			if (!a) return null;
@@ -270,14 +270,21 @@ export default function DirectMapByAttributes() {
 
 		{/* RIGHT — MAP */}
 		<div>
-		  <h3>
+		  <h4>
 			{project.lang === 'es'
 			  ? 'Mapas directos generados'
 			  : 'Generated direct maps'}
-		  </h3>
+		  </h4>
 
 		  {!activePair && (
-			<div style={{ color: '#777' }}>
+			<div
+				style={{
+				  color: '#777',
+				  fontSize: 14,
+				  marginTop: 6,
+				  lineHeight: 1.4,
+				}}
+			  >
 			  {project.lang === 'es'
 				? 'Seleccione 4 atributos para generar los mapas.'
 				: 'Select 4 attributes to generate maps.'}

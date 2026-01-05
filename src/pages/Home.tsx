@@ -8,7 +8,7 @@ export function Home() {
 
   return (
 	<div className="card">
-	  <h2>{tr.homeTitle}</h2>
+	  <h3>{tr.homeTitle}</h3>
 
 	  {/* Краткое описание возможностей, как у тебя было */}
 	  <p>

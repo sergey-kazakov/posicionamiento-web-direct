@@ -262,7 +262,7 @@ export function Survey() {
           gap: 16,
         }}
       >
-        <h2 style={{ margin: 0 }}>{tr.survey}</h2>
+        <h3 style={{ margin: 0 }}>{tr.survey}</h3>
     
         <div style={{ display: "flex", gap: 8 }}>
           {/* Import survey results (future) */}
