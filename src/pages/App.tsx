@@ -81,7 +81,8 @@ function AppInner() {
 			  <option value="en">{tr.en}</option>
 			</select>
 
-			<button className="btn" onClick={() => exportJSON(project)}>
+			{/* JSON controls moved to Survey page */}
+			{/* <button className="btn" onClick={() => exportJSON(project)}>
 			  {tr.export}
 			</button>
 
@@ -96,7 +97,7 @@ function AppInner() {
 				}}
 			  />
 			  {tr.import}
-			</label>
+			</label> */}
 		  </div>
 		</div>
 	  </header>
