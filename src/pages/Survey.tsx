@@ -474,7 +474,14 @@ export function Survey() {
   return (
   <>
     {/* --- SURVEY HEADER / TOOLBAR --- */}
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: 16 }}>
+    <div
+      style={{
+        maxWidth: 1200,
+        margin: "0 auto",
+        paddingRight: 16,
+        marginTop: 16,
+      }}
+    >
       <div
         style={{
           display: "flex",
@@ -486,6 +493,7 @@ export function Survey() {
         <h3 style={{ margin: 0 }}>{tr.survey}</h3>
     
         <div style={{ display: "flex", gap: 8 }}>
+          
           {/* Import CSV */}
           <input
             type="file"
@@ -494,45 +502,25 @@ export function Survey() {
             id="import-csv-input"
             onChange={handleImportCSV}
           />
-          
+    
           <button
             className="btn btn-soft"
             onClick={() => document.getElementById("import-csv-input")?.click()}
-            title={
-              project.lang === "es"
-                ? "Importa un CSV normalizado (respondent, brand, attribute, value). Se calculan medias y se bloquea la edición."
-                : "Import a normalized CSV (respondent, brand, attribute, value). Means are computed and manual editing is locked."
-            }
           >
             {project.lang === "es" ? "Importar CSV" : "Import CSV"}
           </button>
     
           <button
             className="btn btn-soft"
-            onClick={applyToMap}            
-            title={
-              project.lang === "es"
-                ? "Aplica los valores actuales y recalcula los mapas."
-                : "Apply current data values and recalculate the maps."
-            }
+            onClick={applyToMap}
           >
             {project.lang === "es" ? "Aplicar al mapa" : "Apply to map"}
           </button>
-          
-          {/* Export JSON */}
-          <button
-            className="btn btn-soft"
-            onClick={exportJSON}
-            title={
-              project.lang === "es"
-                ? "Guarda el estado actual del ejercicio para reutilizarlo o compartirlo."
-                : "Save the current exercise state to reuse or share it."
-            }
-          >
+    
+          <button className="btn btn-soft" onClick={exportJSON}>
             {project.lang === "es" ? "Exportar JSON" : "Export JSON"}
           </button>
     
-          {/* Import JSON */}
           <input
             type="file"
             accept="application/json"
@@ -540,15 +528,10 @@ export function Survey() {
             id="import-json-input"
             onChange={handleImportJSON}
           />
-          
+    
           <button
             className="btn btn-soft"
             onClick={() => document.getElementById("import-json-input")?.click()}
-            title={
-              project.lang === "es"
-                ? "Carga un estado guardado previamente y restaura los valores."
-                : "Load a previously saved state and restore the values."
-            }
           >
             {project.lang === "es" ? "Importar JSON" : "Import JSON"}
           </button>
@@ -556,13 +539,13 @@ export function Survey() {
       </div>
     </div>
     
-      {/* --- MAIN GRID --- */}
       {/* --- MAIN LAYOUT (NO CSS) --- */}
       <div
         style={{
           display: "flex",
           gap: 20,
           alignItems: "flex-start",
+          marginTop: 16,
         }}
       >
         {/* Блок performance + preference */}
@@ -682,46 +665,43 @@ export function Survey() {
       
             {/* --- APPLY CONFIRMATION MODAL --- */}
                   {showApplyModal && (
-                    <div
-                      style={{
-                        position: "fixed",
-                        inset: 0,
-                        background: "rgba(0,0,0,0.35)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        zIndex: 9999,
-                      }}
-                      onClick={() => setShowApplyModal(false)}
-                    >
-                      <div
-                        className="card"
-                        style={{ maxWidth: 420, padding: 20 }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <h4 style={{ marginTop: 0 }}>
-                          {project.lang === "es"
-                            ? "Mapas actualizados"
-                            : "Maps updated"}
-                        </h4>
-            
-                        <p style={{ fontSize: 14, color: "#444" }}>
-                          {project.lang === "es"
-                            ? "Los datos se han aplicado correctamente. Puedes continuar con el análisis de los mapas."
-                            : "The data has been applied successfully. You can now continue analyzing the maps."}
-                        </p>
-            
-                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-                          <button
-                            className="btn"
+                          <div
+                            style={{
+                              position: "fixed",
+                              inset: 0,
+                              background: "rgba(0,0,0,0.35)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              zIndex: 9999,
+                            }}
                             onClick={() => setShowApplyModal(false)}
                           >
-                            {project.lang === "es" ? "Aceptar" : "OK"}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </>
-              );
-            }
+                            <div
+                              className="card"
+                              style={{ maxWidth: 420, padding: 20 }}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <h4 style={{ marginTop: 0 }}>
+                                {project.lang === "es"
+                                  ? "Mapas actualizados"
+                                  : "Maps updated"}
+                              </h4>
+                  
+                              <p style={{ fontSize: 14, color: "#444" }}>
+                                {project.lang === "es"
+                                  ? "Los datos se han aplicado correctamente. Puedes continuar con el análisis de los mapas."
+                                  : "The data has been applied successfully. You can now continue analyzing the maps."}
+                              </p>
+                  
+                              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+                                <button className="btn" onClick={() => setShowApplyModal(false)}>
+                                  {project.lang === "es" ? "Aceptar" : "OK"}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    );
+                  }
