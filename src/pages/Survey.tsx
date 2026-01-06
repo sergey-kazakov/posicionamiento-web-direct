@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../store';
 import { t } from '../i18n';
+import { parseGoogleFormCSVToResponses } from "../utils/parseGoogleFormCSV";
 // import QRCode from 'qrcode.react';
 // import { fbInit, fbPushResponse } from '../utils/firebase';
 
@@ -201,7 +202,7 @@ export function Survey() {
     reader.onload = () => {
       try {
         const text = String(reader.result ?? "");
-        const responses = parseNormalizedCSVToResponses(text, project);
+        const responses = parseGoogleFormCSVToResponses(text, project);
   
         // 1) staged (ещё НЕ пишем в project.responses)
         setStagedResponses(responses);
