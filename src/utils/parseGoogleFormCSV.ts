@@ -76,25 +76,33 @@ export function parseGoogleFormCSVToResponses(
   // --- parse headers ---
   type ColInfo =
 	| { kind: "ignore" }
-	| { kind: "performance"; brand: string; attrId: string };
+	| { kind: "performance"; brand: string; attrId: string }
 
   const cols: ColInfo[] = headers.map((h) => {
+	// ignore timestamp or empty headers
+	if (!h || normalize(h) === "timestamp") {
+	  return { kind: "ignore" };
+	}
+  
+	// expected format: Brand [Attribute]
 	const m = h.match(/^(.+?)\s*\[(.+?)\]\s*$/);
-	if (!m) return { kind: "ignore" };
-
+	if (!m) {
+	  throw new Error(`Invalid CSV header format: "${h}"`);
+	}
+  
 	const brandRaw = normalize(m[1]);
 	const attrRaw = normalize(m[2]);
-
+  
 	const brand = brandMap.get(brandRaw);
 	if (!brand) {
 	  throw new Error(`Unknown brand in CSV header: "${m[1]}"`);
 	}
-
+  
 	const attrId = attrMap.get(attrRaw);
 	if (!attrId) {
 	  throw new Error(`Unknown attribute in CSV header: "${m[2]}"`);
 	}
-
+  
 	return { kind: "performance", brand, attrId };
   });
 
@@ -114,21 +122,26 @@ export function parseGoogleFormCSVToResponses(
 
 	cols.forEach((c, idx) => {
 	  if (c.kind === "ignore") return;
-
+	  
 	  const raw = cells[idx];
 	  if (!raw) return;
-
+	  
 	  const num = Number(raw);
 	  if (!Number.isFinite(num)) {
 		throw new Error(`Non-numeric value at line ${i + 1}`);
 	  }
-
+	  
 	  const value = Math.min(5, Math.max(1, num));
-
-	  if (!r.performance[c.brand]) r.performance[c.brand] = {};
-	  r.performance[c.brand][c.attrId] = value;
-
-	  hasData = true;
+	  
+	  if (c.kind === "performance") {
+		if (!r.performance[c.brand]) r.performance[c.brand] = {};
+		r.performance[c.brand][c.attrId] = value;
+		hasData = true;
+	  }	  
+	  
+	  if (c.kind === "performance" && c.attrId === "preference") {
+		r.preference[c.brand] = value;
+	  }
 	});
 
 	if (hasData) {
