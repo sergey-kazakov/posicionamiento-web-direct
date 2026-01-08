@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../store';
 import { t } from '../i18n';
 import { parseGoogleFormCSVToResponses } from "../utils/parseGoogleFormCSV";
+import SurveyQRCode from "../components/SurveyQRCode";
 // import QRCode from 'qrcode.react';
 // import { fbInit, fbPushResponse } from '../utils/firebase';
 
@@ -635,20 +636,11 @@ export function Survey() {
                   ? "Modo sandbox: los valores pueden editarse manualmente. Haz clic en «Aplicar al mapa» para generar los mapas. El reset se realiza en la página de resultados."
                   : "Sandbox mode: values can be edited manually. Click on “Apply to map” to generate the maps. Reset is available on the Results page.")}
           </div>
-        </div>
-     
-        {/* QR (пока выключен) */}
-        {/* {false && (
-          <div>
-            <div className="card" style={{ display: 'inline-block' }}>
-              <div style={{ fontWeight: 700, marginBottom: 6 }}>QR</div>
-              {false && <QRCode value={shareUrl} size={140} />}
-              <div style={{ fontSize: 12, maxWidth: 220, wordBreak: 'break-all' }}>
-                {shareUrl}
-              </div>
-            </div>
+          {/* --- SURVEY QR CODE --- */}
+          <div className="card" style={{ marginTop: 12 }}>
+            <SurveyQRCode lang={project.lang} />
           </div>
-        )} */}
+        </div>        
       </div>
 
       <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
