@@ -534,18 +534,27 @@ export function Survey() {
       </div>
     </div>
     
-      {/* --- MAIN LAYOUT (NO CSS) --- */}
+      {/* --- MAIN LAYOUT WRAPPER --- */}
       <div
         style={{
-          display: "flex",
-          gap: 20,
-          alignItems: "flex-start",
-          marginTop: 16,
+          maxWidth: 1200,
+          margin: "0 auto",
+          paddingRight: 16,
         }}
       >
+        {/* --- MAIN LAYOUT --- */}
+        <div
+          style={{
+            display: "flex",
+            gap: 20,
+            alignItems: "flex-start",
+            marginTop: 16,
+          }}
+        >
+        
         {/* Блок performance + preference */}
         
-        <div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h4>{tr.performance}</h4>        
                     
           {project.brands.map((b) => (
@@ -619,75 +628,110 @@ export function Survey() {
           ))}
         </div>
         
-        {/* --- DATA STATUS --- */}
-        <div className="card" style={{ marginBottom: 12 }}>
-          <strong>
-            {project.lang === "es"
-              ? "Estado de los datos"
-              : "Data status"}
-          </strong>
+        {/* --- RIGHT COLUMN --- */}
+        <div style={{ width: 469 }}>
         
-          <div style={{ fontSize: 13, marginTop: 6, color: "#555" }}>
-            {hasImportedData
-              ? (project.lang === "es"
-                  ? "Datos importados. Pulsa «Aplicar al mapa» para generar los mapas. La edición manual está desactivada. El reset se realiza en la página de resultados o despúes de ver el mapa de posicionamiento en la proxima pagina."
-                  : "Imported data. Click “Apply to map” to generate maps. Manual editing is disabled. Reset is available on the Results page or after viewing the Positioning Map.")
-              : (project.lang === "es"
-                  ? "Modo sandbox: los valores pueden editarse manualmente. Haz clic en «Aplicar al mapa» para generar los mapas. El reset se realiza en la página de resultados."
-                  : "Sandbox mode: values can be edited manually. Click on “Apply to map” to generate the maps. Reset is available on the Results page.")}
+          {/* --- DATA STATUS --- */}
+          <div className="card" style={{ marginBottom: 12 }}>
+            <strong>
+              {project.lang === "es"
+                ? "Estado de los datos"
+                : "Data status"}
+            </strong>
+        
+            <div style={{ fontSize: 13, marginTop: 6, color: "#555" }}>
+              {hasImportedData
+                ? (project.lang === "es"
+                    ? "Datos importados. Pulsa «Aplicar al mapa» para generar los mapas. La edición manual está desactivada. El reset se realiza en la página de resultados."
+                    : "Imported data. Click “Apply to map” to generate maps. Manual editing is disabled. Reset is available on the Results page.")
+                : (project.lang === "es"
+                    ? "Modo sandbox: los valores pueden editarse manualmente. Haz clic en «Aplicar al mapa» para generar los mapas."
+                    : "Sandbox mode: values can be edited manually. Click on “Apply to map” to generate the maps.")}
+            </div>
           </div>
+        
           {/* --- SURVEY QR CODE --- */}
-          <div className="card" style={{ marginTop: 12 }}>
+          <div className="card" style={{ textAlign: "center" }}>
             <SurveyQRCode lang={project.lang} />
           </div>
-        </div>        
-      </div>
-
-      <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
-              {/* <button className="btn" onClick={submit}>
-                {tr.submit}
-              </button> */}
+          
+          {/* --- JSON IMPORT / EXPORT INFO --- */}
+          <div className="card" style={{ marginTop: 12 }}>
+            <strong>
+              {project.lang === "es"
+                ? "Exportar / Importar JSON"
+                : "Export / Import JSON"}
+            </strong>
+          
+            <div style={{ fontSize: 13, marginTop: 6, color: "#555" }}>
+              {project.lang === "es" ? (
+                <>
+                  <p style={{ margin: 0 }}>
+                    El archivo JSON sirve para guardar y restaurar el estado del ejercicio
+                    (modo sandbox o resultados agregados).
+                  </p>
+                  <p style={{ margin: "6px 0 0 0" }}>
+                    No contiene respuestas individuales de los estudiantes y no sustituye
+                    al archivo CSV del cuestionario.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p style={{ margin: 0 }}>
+                    The JSON file is used to save and restore the exercise state
+                    (sandbox mode or aggregated results).
+                  </p>
+                  <p style={{ margin: "6px 0 0 0" }}>
+                    It does not contain individual student responses and does not replace
+                    the survey CSV file.
+                  </p>
+                </>
+              )}
             </div>
+          </div>        
+        </div>       
+      </div>
+    </div>
       
-            {/* --- APPLY CONFIRMATION MODAL --- */}
-                  {showApplyModal && (
-                          <div
-                            style={{
-                              position: "fixed",
-                              inset: 0,
-                              background: "rgba(0,0,0,0.35)",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              zIndex: 9999,
-                            }}
-                            onClick={() => setShowApplyModal(false)}
-                          >
-                            <div
-                              className="card"
-                              style={{ maxWidth: 420, padding: 20 }}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <h4 style={{ marginTop: 0 }}>
-                                {project.lang === "es"
-                                  ? "Mapas actualizados"
-                                  : "Maps updated"}
-                              </h4>
-                  
-                              <p style={{ fontSize: 14, color: "#444" }}>
-                                {project.lang === "es"
-                                  ? "Los datos se han aplicado correctamente. Puedes continuar con el análisis de los mapas."
-                                  : "The data has been applied successfully. You can now continue analyzing the maps."}
-                              </p>
-                  
-                              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-                                <button className="btn" onClick={() => setShowApplyModal(false)}>
-                                  {project.lang === "es" ? "Aceptar" : "OK"}
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    );
-                  }
+      {/* --- APPLY CONFIRMATION MODAL --- */}
+      {showApplyModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.35)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+          onClick={() => setShowApplyModal(false)}
+        >
+          <div
+            className="card"
+            style={{ maxWidth: 420, padding: 20 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h4 style={{ marginTop: 0 }}>
+              {project.lang === "es"
+                ? "Mapas actualizados"
+                : "Maps updated"}
+            </h4>
+
+            <p style={{ fontSize: 14, color: "#444" }}>
+              {project.lang === "es"
+                ? "Los datos se han aplicado correctamente. Puedes continuar con el análisis de los mapas."
+                : "The data has been applied successfully. You can now continue analyzing the maps."}
+            </p>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+              <button className="btn" onClick={() => setShowApplyModal(false)}>
+                {project.lang === "es" ? "Aceptar" : "OK"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
