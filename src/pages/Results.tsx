@@ -73,6 +73,13 @@ export function Results({ setView }: Props) {
     (r: any) => r.type === 'direct-attributes'
   );
   const lastDirect = directResults[directResults.length - 1];
+  const [xAttrId, yAttrId] = lastDirect?.attributes ?? [];
+  
+  function attrLabel(id: string) {
+    const a = project.attributes?.find((x: any) => x.id === id);
+    if (!a) return id;
+    return project.lang === 'es' ? a.labelEs : a.labelEn;
+  }
 
   /* =========================
      RENDER
@@ -238,6 +245,28 @@ export function Results({ setView }: Props) {
                         </g>
                       );
                     })}
+                    {/* X axis label */}
+                    <text
+                      x={DIRECT_MAP_SIZE / 2}
+                      y={DIRECT_MAP_SIZE + 22}
+                      textAnchor="middle"
+                      fontSize={14}
+                      fill="#111"
+                    >
+                      {attrLabel(xAttrId)}
+                    </text>
+                    
+                    {/* Y axis label */}
+                    <text
+                      x={-22}
+                      y={DIRECT_MAP_SIZE / 2}
+                      textAnchor="middle"
+                      fontSize={14}
+                      fill="#111"
+                      transform={`rotate(-90 -22 ${DIRECT_MAP_SIZE / 2})`}
+                    >
+                      {attrLabel(yAttrId)}
+                    </text>
                   </svg>
                 </>
               ) : (
