@@ -4,8 +4,6 @@ import { useApp } from '../store';
 import { t } from '../i18n';
 import { parseGoogleFormCSVToResponses } from "../utils/parseGoogleFormCSV";
 import SurveyQRCode from "../components/SurveyQRCode";
-// import QRCode from 'qrcode.react';
-// import { fbInit, fbPushResponse } from '../utils/firebase';
 
 type PerfState = Record<string, Record<string, number>>; // brand -> attrId -> 1..5
 type PrefState = Record<string, number>;                  // brand -> 1..5
@@ -63,13 +61,7 @@ export function Survey() {
   // ----- CSV import --------
   const [csvError, setCsvError] = useState<string | null>(null);
   const [csvImported, setCsvImported] = useState(false);
-  
-  {/*
-  // ---- подготовка Firebase (если сконфигурирован) ----
-  useEffect(() => {
-    fbInit();
-  }, []); */}
-
+    
   // ---- автосохранение черновика (perf + pref) ----
   useEffect(() => {
     const id = setTimeout(() => {
@@ -84,14 +76,7 @@ export function Survey() {
     }, 250);
     return () => clearTimeout(id);
   }, [perf, pref]);
-
-  // ---- URL для QR ----
-  // URL для QR (используется, когда QR включён)
-  const shareUrl = useMemo(
-    () => window.location.origin + window.location.pathname + '#/survey',
-    []
-  );
-
+  
   // ---- обновление отдельных значений ----
   const setPerfValue = (brand: string, attrId: string, v: number) => {
     setPerf((prev) => ({
@@ -105,31 +90,7 @@ export function Survey() {
       ...prev,
       [brand]: v,
     }));
-  };
-
-  /*
-  const submit = async () => {
-    const response = {
-      importance: {},
-      performance: perf,
-      preference: pref,
-      ts: Date.now(),
-    };
-  
-    const ok = await fbPushResponse(project.id, response);
-    if (!ok) {
-      setProject({
-        ...project,
-        responses: [...project.responses, response],
-      });
-    }
-  
-    localStorage.removeItem(DRAFT_KEY);
-    alert('¡Gracias! / Thank you!');
-    setPerf(makeEmptyPerf());
-    setPref(makeEmptyPref());
-  };
-  */
+  };  
 
   const prefQuestion =
     project.lang === 'es'
@@ -300,172 +261,8 @@ export function Survey() {
     });
   
     return { perf, pref };
-  };
-  
-  function detectDelimiter(line: string) {
-    const candidates = [",", ";", "\t"];
-    let best = ",";
-    let bestCount = -1;
-    for (const d of candidates) {
-      const c = line.split(d).length;
-      if (c > bestCount) {
-        bestCount = c;
-        best = d;
-      }
-    }
-    return best;
-  }
-  
-  function splitCSVLine(line: string, delim: string) {
-    // минимальный CSV splitter с учётом кавычек
-    const out: string[] = [];
-    let cur = "";
-    let inQuotes = false;
-  
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') {
-        // двойные кавычки "" внутри строк
-        if (inQuotes && line[i + 1] === '"') {
-          cur += '"';
-          i++;
-        } else {
-          inQuotes = !inQuotes;
-        }
-      } else if (ch === delim && !inQuotes) {
-        out.push(cur.trim());
-        cur = "";
-      } else {
-        cur += ch;
-      }
-    }
-    out.push(cur.trim());
-    return out.map((s) => s.replace(/^"(.*)"$/, "$1").trim());
-  }
-  
-  function normalizeHeader(h: string) {
-    return h.trim().toLowerCase();
-  }
-  
-  function clamp15(v: number) {
-    if (v < 1) return 1;
-    if (v > 5) return 5;
-    return v;
-  }
-  
-  function buildBrandMap(project: any) {
-    const map = new Map<string, string>();
-    for (const b of project.brands) {
-      map.set(b.name.trim().toLowerCase(), b.name);
-    }
-    // небольшой бонус: IDEAL
-    const ideal = project.brands.find((b: any) => /ideal/i.test(b.name));
-    if (ideal) {
-      map.set("ideal", ideal.name);
-      map.set("marca ideal", ideal.name);
-    }
-    return map;
-  }
-  
-  function buildAttrMap(project: any) {
-    // маппим: id + labelEs + labelEn + "Atributo - N" по индексу
-    const map = new Map<string, string>();
-    project.attributes.forEach((a: any, idx: number) => {
-      map.set(String(a.id).trim().toLowerCase(), a.id);
-      if (a.labelEs) map.set(String(a.labelEs).trim().toLowerCase(), a.id);
-      if (a.labelEn) map.set(String(a.labelEn).trim().toLowerCase(), a.id);
-  
-      // поддержка "Atributo - 1" / "Attribute - 1"
-      map.set(`atributo - ${idx + 1}`, a.id);
-      map.set(`attribute - ${idx + 1}`, a.id);
-    });
-    return map;
-  }  
-    
-  function parseNormalizedCSVToResponses(text: string, project: any) {
-    const linesRaw = text
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter((l) => l.length > 0 && !l.startsWith("#"));
-  
-    if (!linesRaw.length) {
-      throw new Error("Empty CSV");
-    }
-  
-    const delim = detectDelimiter(linesRaw[0]);
-    const headers = splitCSVLine(linesRaw[0], delim).map(normalizeHeader);
-  
-    const idx = {
-      respondent: headers.indexOf("respondent"),
-      brand: headers.indexOf("brand"),
-      attribute: headers.indexOf("attribute"),
-      value: headers.indexOf("value"),
-    };
-  
-    if (idx.respondent < 0 || idx.brand < 0 || idx.attribute < 0 || idx.value < 0) {
-      throw new Error("CSV schema mismatch");
-    }
-  
-    const brandMap = buildBrandMap(project);
-    const attrMap = buildAttrMap(project);
-  
-    // respondent -> response
-    const byResp = new Map<string, any>();
-  
-    for (let i = 1; i < linesRaw.length; i++) {
-      const cols = splitCSVLine(linesRaw[i], delim);
-      const respondent = (cols[idx.respondent] ?? "").trim();
-      const brandRaw = (cols[idx.brand] ?? "").trim();
-      const attrRaw = (cols[idx.attribute] ?? "").trim();
-      const valRaw = (cols[idx.value] ?? "").trim();
-  
-      if (!respondent || !brandRaw || !attrRaw || !valRaw) continue;
-  
-      const brandKey = brandRaw.toLowerCase();
-      const brand = brandMap.get(brandKey);
-      if (!brand) {
-        // неизвестный бренд → это ошибка контракта
-        throw new Error(`Unknown brand: ${brandRaw}`);
-      }
-  
-      const num = Number(valRaw);
-      if (!Number.isFinite(num)) {
-        throw new Error(`Non-numeric value at line ${i + 1}`);
-      }
-      const value = Math.min(5, Math.max(1, num));
-  
-      if (!byResp.has(respondent)) {
-        byResp.set(respondent, {
-          performance: {},
-          preference: {},
-          ts: Date.now(),
-        });
-      }
-  
-      const r = byResp.get(respondent);
-  
-      if (isPreferenceLabel(attrRaw)) {
-        r.preference[brand] = value;
-      } else {
-        const attrKey = attrRaw.toLowerCase();
-        const attrId = attrMap.get(attrKey);
-        if (!attrId) {
-          throw new Error(`Unknown attribute: ${attrRaw}`);
-        }
-        if (!r.performance[brand]) r.performance[brand] = {};
-        r.performance[brand][attrId] = value;
-      }
-    }
-  
-    const responses = Array.from(byResp.values());
-  
-    if (!responses.length) {
-      throw new Error("No valid rows found");
-    }
-  
-    return responses;
-  }
-    
+  }; 
+      
   return (
   <>
     {/* --- SURVEY HEADER / TOOLBAR --- */}
