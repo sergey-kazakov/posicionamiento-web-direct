@@ -13,6 +13,7 @@ export function Results({ setView }: Props) {
   const tr = t(project.lang);
   const mapRef = useRef<HTMLCanvasElement | null>(null);
   const [studentName, setStudentName] = useState('');
+  const [printMode, setPrintMode] = useState(false);
 
   const DIRECT_MAP_SIZE = 260;
   const DIRECT_MAP_PAD = 35;
@@ -40,8 +41,8 @@ export function Results({ setView }: Props) {
       showAttributes: true,
       selectedAttrIds: project.attributes.map((a: any) => a.id),
     });
-  }, [prefMap, project.lang]);
-
+  }, [prefMap, project.lang]); 
+ 
   /* =========================
      RESET RESPONSES
      ========================= */
@@ -86,7 +87,7 @@ export function Results({ setView }: Props) {
               ? 'No hay resultados. Inicie un nuevo análisis.'
               : 'No results available. Please start a new analysis.'}
           </p>
-
+      
           <button className="btn" onClick={() => setView('home')}>
             {project.lang === 'es' ? 'Volver al inicio' : 'Back to home'}
           </button>
@@ -106,7 +107,7 @@ export function Results({ setView }: Props) {
           >
             {/* LEFT: title + student name */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <h3 style={{ margin: 0 }}>
+              <h3 className="screen-title" style={{ margin: 0 }}>
                 {project.lang === 'es'
                   ? 'Resultados del análisis de posicionamiento de marcas'
                   : 'Brands positioning analysis results'}
@@ -155,11 +156,11 @@ export function Results({ setView }: Props) {
               marginBottom: 16,
             }}
           >
-            <strong>
+            <h3 style={{ margin: 0 }}>
               {project.lang === 'es'
                 ? 'Resultados del análisis de posicionamiento de marcas'
                 : 'Brands positioning analysis results'}
-            </strong>
+            </h3>
 
             <div>              
               <div className="student-name-print">

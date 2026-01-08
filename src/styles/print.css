@@ -1,0 +1,114 @@
+@media print {
+
+  /* ===== page ===== */
+  @page {
+	size: A4 portrait;
+	margin: 12mm;
+  }
+
+  body {
+	background: #fff !important;
+  }
+
+  /* ===== hide screen-only ===== */
+  .print-hide,
+  button {
+	display: none !important;
+  }
+
+  /* ===== show print-only ===== */
+  .print-only {
+	display: block !important;
+  }
+
+  /* ===== center titles ===== */
+  h3, h4 {
+	text-align: center;
+  }
+
+  /* ===== center student name ===== */
+  .student-name-print {
+	text-align: center;
+	margin-top: 6px;
+  }
+
+  /* ===== center canvases ===== */
+  canvas {
+	display: block;
+	margin: 0 auto 12px auto;
+	max-width: 480px !important;
+	max-height: 280px !important;
+  }
+
+  /* ===== center tables ===== */
+  table {
+	margin-left: auto;
+	margin-right: auto;
+  }
+
+  th, td {
+	text-align: center;
+  }
+
+  /* ===== avoid page breaks inside blocks ===== */
+  table, canvas, svg {
+	break-inside: avoid;
+	page-break-inside: avoid;
+  }
+}
+
+@media print {
+
+  /* ===== CENTER ALL HEADERS ===== */
+  h3,
+  h4 {
+	text-align: center !important;
+  }
+
+  /* ===== STUDENT NAME ===== */
+  .student-name-print {
+	text-align: center !important;
+	margin-top: 4mm;
+  }
+
+  /* ===== MAIN POSITIONING MAP (CANVAS) ===== */
+  canvas {
+	display: block !important;
+	margin: 0 auto 10mm auto !important;
+	max-width: 180mm !important;   /* БОЛЬШЕ */
+	max-height: 90mm !important;
+  }
+
+  /* ===== DIRECT MAP (SVG) ===== */
+  svg {
+	display: block !important;
+	margin: 0 auto 8mm auto !important;
+  }
+
+  /* ===== TABLES ===== */
+  table {
+	margin-left: auto !important;
+	margin-right: auto !important;
+  }
+
+  th,
+  td {
+	text-align: center !important;
+  }
+
+  /* ===== RESULTS GRID: STACK & CENTER ===== */
+  .results-grid {
+	display: block !important;
+  }
+
+  .results-grid > div {
+	margin-bottom: 10mm;
+	text-align: center;
+  }
+  
+  h4 {
+	  break-after: avoid;
+	  page-break-after: avoid;
+	}
+
+}
