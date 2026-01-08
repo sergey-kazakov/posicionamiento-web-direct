@@ -62,15 +62,18 @@ const ES: Dict = {
   homeTitle: 'Posicionamiento de productos y marcas mediante mapas perceptuales',
   homeIntro: `Bienvenido/a a POSICIONAMIENTO App.
   
- Esta app permite generar mapas perceptuales en 2D y analizar el posicionamiento de productos y marcas en el mercado utilizando el Análisis de Componentes Principales (PCA).
-  
-  Guía rápida de referencia:
-  1. Introduce marcas y atributos manualmente en la sección DATOS.
-  2. Si tienes un análisis previo, puedes cargarlo con la opción Importar JSON.
-  3. Revisa o edita la matriz de atributos.
-  4. Ve a RESULTADOS para generar el mapa PCA.
-  5. Si el archivo JSON incluye preferencias, se mostrarán vectores PrefMap.
-  6. Guarda mapas y tablas usando Imprimir / PDF.
+ Descripción
+ Esta aplicación permite analizar el posicionamiento de marcas y productos mediante mapas perceptuales en 2D.
+ El análisis se basa en datos de encuestas reales y combina evaluaciones de atributos, preferencias y técnicas de reducción dimensional (PCA y mapas directos).
+ 
+ Guía rápida
+   1. Define las marcas y atributos del estudio en el modo Designer.
+   2. Recoge datos de los participantes mediante un formulario externo (Google Forms).
+   3. Importa los resultados en formato CSV para agregarlos y validarlos en la app.
+   4. Como alternativa, puedes trabajar en modo sandbox, introducir valores manualmente y guardar o cargar el estado del análisis en formato JSON.
+   5. Revisa los valores agregados y aplica los datos para generar los mapas.
+   6. Explora los resultados en mapas perceptuales, mapas directos y tablas analíticas.
+   7. Exporta los resultados finales mediante Imprimir / PDF.
   
   Para más detalles, consulta el Manual Técnico.`,
 
@@ -131,15 +134,18 @@ const EN: Dict = {
   homeTitle: 'Products/Brands Positioning Through Perceptual Maps',
   homeIntro: `Welcome to POSICIONAMIENTO App.
   
-  This lab lets you generate 2D perceptual maps and analyse products and brands market positioning using Principal Component Analysis (PCA).
+  Description
+  This application allows the analysis of brand and product positioning using 2D perceptual maps.
+  The analysis is based on real survey data and integrates attribute evaluations, preferences, and dimensionality-reduction techniques (PCA and direct maps).
   
-  Quick reference guide:
-  1. Enter brands and attributes manually in the DATA section.
-  2. If you have a previous analysis, load it using the Import JSON option.
-  3. Review or edit the attribute matrix.
-  4. Go to RESULTS to generate the PCA map.
-  5. If your JSON file includes preferences, PrefMap vectors will be displayed.
-  6. Save maps and tables using Print / PDF.
+  Quick guide
+  1.  Define the brands and attributes of the study in Designer mode.
+  2.  Collect responses from participants using an external survey (Google Forms).
+  3.  Import the results in CSV format to aggregate and validate the data in the app.
+  4.  Alternatively, you can work in sandbox mode, enter values manually, and save or load the analysis state using JSON files.
+  5.  Review the aggregated values and apply them to generate the maps.
+  6.  Analyse results through perceptual maps, direct maps, and analytical tables.
+  7.  Export the final outputs using Print / PDF.
   
   For more details, see the Technical Manual.`,
 
