@@ -59,6 +59,10 @@ export function Survey() {
   const [stagedResponses, setStagedResponses] = useState<any[] | null>(null);
   const [showApplyModal, setShowApplyModal] = useState(false);
   
+  // ----- CSV import --------
+  const [csvError, setCsvError] = useState<string | null>(null);
+  const [csvImported, setCsvImported] = useState(false);
+  
   {/*
   // ---- подготовка Firebase (если сконфигурирован) ----
   useEffect(() => {
@@ -375,18 +379,8 @@ export function Survey() {
       map.set(`attribute - ${idx + 1}`, a.id);
     });
     return map;
-  }
-  
-  function isPreferenceLabel(s: string) {
-    const t = s.trim().toLowerCase();
-    return (
-      t.startsWith("en general") ||
-      t.startsWith("overall") ||
-      t.includes("preferirías esta marca") ||
-      t.includes("prefer this brand")
-    );
-  }
-  
+  }  
+    
   function parseNormalizedCSVToResponses(text: string, project: any) {
     const linesRaw = text
       .split(/\r?\n/)

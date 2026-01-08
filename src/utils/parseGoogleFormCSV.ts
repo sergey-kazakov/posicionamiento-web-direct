@@ -4,6 +4,24 @@ type Project = any;
 
 const normalize = (s: string) => s.trim().toLowerCase();
 
+function isIgnoredHeader(h: string) {
+  const t = normalize(h);
+
+  // Google Forms "Timestamp" localized
+  const ignored = new Set([
+	"timestamp",
+	"marca de tiempo",
+	"marcador de tiempo",
+	"fecha y hora",
+	"time stamp",
+	"отметка времени",
+	"дата и время",
+	"дата/время",
+  ]);
+
+  return !t || ignored.has(t);
+}
+
 function detectDelimiter(line: string) {
   const cands = [",", ";", "\t"];
   let best = ",";
@@ -43,6 +61,21 @@ function splitCSVLine(line: string, delim: string) {
   return out.map(s => s.replace(/^"(.*)"$/, "$1").trim());
 }
 
+function isPreferenceLabel(h: string) {
+  const t = h
+	.toLowerCase()
+	.replace(/\(.*?\)/g, "")
+	.replace(/\s+/g, " ")
+	.trim();
+
+  return (
+	t.startsWith("en general") ||
+	t.startsWith("overall") ||
+	t.includes("preferirías esta marca") ||
+	t.includes("prefer this brand")
+  );
+}
+
 export function parseGoogleFormCSVToResponses(
   text: string,
   project: Project
@@ -77,11 +110,17 @@ export function parseGoogleFormCSVToResponses(
   type ColInfo =
 	| { kind: "ignore" }
 	| { kind: "performance"; brand: string; attrId: string }
+	| { kind: "preference"; brand: string };
 
   const cols: ColInfo[] = headers.map((h) => {
 	// ignore timestamp or empty headers
-	if (!h || normalize(h) === "timestamp") {
+	if (isIgnoredHeader(h)) {
 	  return { kind: "ignore" };
+	}
+  
+	// --- preference question ---
+	if (isPreferenceLabel(h)) {
+	  return { kind: "preference", brand: "__FROM_ROW__" };
 	}
   
 	// expected format: Brand [Attribute]
@@ -122,25 +161,29 @@ export function parseGoogleFormCSVToResponses(
 
 	cols.forEach((c, idx) => {
 	  if (c.kind === "ignore") return;
-	  
+	
 	  const raw = cells[idx];
 	  if (!raw) return;
-	  
+	
 	  const num = Number(raw);
 	  if (!Number.isFinite(num)) {
 		throw new Error(`Non-numeric value at line ${i + 1}`);
 	  }
-	  
+	
 	  const value = Math.min(5, Math.max(1, num));
-	  
+	
 	  if (c.kind === "performance") {
 		if (!r.performance[c.brand]) r.performance[c.brand] = {};
 		r.performance[c.brand][c.attrId] = value;
 		hasData = true;
-	  }	  
-	  
-	  if (c.kind === "performance" && c.attrId === "preference") {
-		r.preference[c.brand] = value;
+	  }
+	
+	  if (c.kind === "preference") {
+		const brands = Object.keys(r.performance);
+		brands.forEach((b) => {
+		  r.preference[b] = value;
+		});
+		hasData = true;
 	  }
 	});
 
