@@ -468,9 +468,15 @@ export function Survey() {
           <div className="card" style={{ marginBottom: 12 }}>
             <strong>
               {project.lang === "es"
-                ? "QR del cuestionario (profesor)"
-                : "Survey QR (instructor)"}
+                ? "QR del cuestionario (profesorado)"
+                : "Survey QR (instructors)"}
             </strong>
+            
+            <p style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
+              {project.lang === "es"
+                ? "Abra la plantilla del formulario, guárdela en su Google Drive, realice los cambios necesarios y pegue aquí el enlace de su encuesta."
+                : "Open the form template, save it to your Google Drive, edit it as needed, and paste the survey link below."}
+            </p>
           
             <div style={{ fontSize: 13, marginTop: 8 }}>
               <input
