@@ -580,6 +580,54 @@ export default function DirectMapByAttributes() {
 				  >
 					{project.lang === 'es' ? 'Añadir a resultados' : 'Add to Results'}
 				  </button>
+				  
+				  {hoverPoint && (
+					<div
+					  style={{
+						marginTop: 20,
+						padding: '12px 14px',
+						border: '1px solid #e5e7eb',
+						borderRadius: 8,
+						background: '#fafafa',
+						fontSize: 13,
+					  }}
+					>
+					  <div style={{ fontWeight: 600, marginBottom: 8 }}>
+						{project.lang === 'es'
+						  ? `Distancias desde ${hoverPoint.name}`
+						  : `Distances from ${hoverPoint.name}`}
+					  </div>
+				  
+					  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+						<tbody>
+						  {points
+							.filter(p => p.name !== hoverPoint.name)
+							.map(p => ({
+							  name: p.name,
+							  d: distance(hoverPoint, p),
+							}))
+							.sort((a, b) => a.d - b.d)
+							.map((row, i) => (
+							  <tr key={i}>
+								<td style={{ padding: '4px 0', color: '#374151' }}>
+								  {row.name}
+								</td>
+								<td
+								  style={{
+									padding: '4px 0',
+									textAlign: 'right',
+									fontVariantNumeric: 'tabular-nums',
+									color: '#111',
+								  }}
+								>
+								  {row.d.toFixed(2)}
+								</td>
+							  </tr>
+							))}
+						</tbody>
+					  </table>
+					</div>
+				  )}
 				</div>
 			  </div>
 			  
