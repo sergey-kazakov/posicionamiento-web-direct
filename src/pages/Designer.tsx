@@ -73,10 +73,10 @@ export function Designer() {
 	  color,
 	};
 
-	setProject({
-	  ...project,
-	  brands: [...project.brands, b],
-	});
+	setProject((prev) => ({
+	  ...prev,
+	  brands: [...prev.brands, b],
+	}));
 
 	setBrand('');
   }
@@ -85,11 +85,11 @@ export function Designer() {
 	const newBrands = project.brands.filter((b) => b.name !== name);
 	const newBenchmark = project.benchmark === name ? '' : project.benchmark;
 
-	setProject({
-	  ...project,
-	  brands: newBrands,
-	  benchmark: newBenchmark,
-	});
+	setProject((prev) => ({
+	  ...prev,
+	  brands: prev.brands.filter((b) => b.name !== name),
+	  benchmark: prev.benchmark === name ? '' : prev.benchmark,
+	}));
   }
 
   function handleBrandsDragEnd(event: DragEndEvent) {
@@ -102,10 +102,10 @@ export function Designer() {
 
 	const reordered = arrayMove(project.brands, oldIndex, newIndex);
 
-	setProject({
-	  ...project,
+	setProject((prev) => ({
+	  ...prev,
 	  brands: reordered,
-	});
+	}));
   }
 
   // ───────── АТРИБУТЫ ─────────
@@ -130,10 +130,10 @@ export function Designer() {
 	  reversed: rev,
 	};
 
-	setProject({
-	  ...project,
-	  attributes: [...project.attributes, a],
-	});
+	setProject((prev) => ({
+	  ...prev,
+	  attributes: [...prev.attributes, a],
+	}));
 
 	setAttrEs('');
 	setAttrEn('');
@@ -157,10 +157,10 @@ export function Designer() {
 
 	const reordered = arrayMove(project.attributes, oldIndex, newIndex);
 
-	setProject({
-	  ...project,
+	setProject((prev) => ({
+	  ...prev,
 	  attributes: reordered,
-	});
+	}));
   }
 
   // ───────── РЕНДЕР ─────────
@@ -168,6 +168,52 @@ export function Designer() {
   return (
 	<div className="card">
 	  <div className="grid">
+		
+		{/* Продукт */}
+		<div>
+		  <h3>{tr.product}</h3>
+		
+		  <div className="grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+			<div>
+			  <label>ES</label>
+			  <input
+				value={project.product?.es || ''}
+				placeholder="Ej. Zumos"
+				onChange={(e) =>
+				  setProject((prev) => ({
+					...prev,
+					product: {
+					  ...(prev.product || { es: '', en: '' }),
+					  es: e.target.value,
+					},
+				  }))
+				}
+			  />
+			</div>
+		
+			<div>
+			  <label>EN</label>
+			  <input
+				value={project.product?.en || ''}
+				placeholder="E.g. Juices"
+				onChange={(e) =>
+				  setProject((prev) => ({
+					...prev,
+					product: {
+					  ...(prev.product || { es: '', en: '' }),
+					  en: e.target.value,
+					},
+				  }))
+				}
+			  />
+			</div>
+		  </div>
+		
+		  <p className="hint" style={{ marginTop: 6 }}>
+			{tr.productNote}
+		  </p>
+		</div>
+		
 		{/* Бренды */}
 		<div>
 		  <h3>{tr.brands}</h3>
@@ -247,11 +293,12 @@ export function Designer() {
 			<select
 			  value={project.benchmark || ''}
 			  onChange={(e) =>
-				setProject({
-				  ...project,
+				setProject((prev) => ({
+				  ...prev,
 				  benchmark: e.target.value,
-				})
+				}))
 			  }
+			  
 			>
 			  <option value=""></option>
 			  {project.brands.map((b) => (
@@ -261,7 +308,7 @@ export function Designer() {
 			  ))}
 			</select>
 		  </div>
-		</div>
+		</div>		
 
 		{/* Атрибуты */}
 		<div>

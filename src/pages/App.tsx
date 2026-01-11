@@ -73,9 +73,10 @@ function AppInner() {
 
 			<select
 			  value={project.lang}
-			  onChange={(e) =>
-				setProject({ ...project, lang: e.target.value as any })
-			  }
+			  onChange={(e) => {
+				const newLang = e.target.value as "es" | "en";
+				setProject(prev => ({ ...prev, lang: newLang }));
+			  }}
 			>
 			  <option value="es">{tr.es}</option>
 			  <option value="en">{tr.en}</option>

@@ -24,6 +24,12 @@ export type SurveyResponse = {
 export type Project = {
   id: string;
   lang: Lang;
+  
+  product?: {
+	  es: string;
+	  en: string;
+	};
+  
   brands: BrandStyle[];
   attributes: Attribute[];
   benchmark?: string;
@@ -73,6 +79,12 @@ type Ctx = {
 const seed: Project = {
   id: 'demo',
   lang: 'es',
+  
+  product: {
+	  es: '',
+	  en: '',
+	},
+	
   brands: [
 	{ name: 'Don Simon', color: '#0D1B2A' },
 	{ name: 'Hacendado' },

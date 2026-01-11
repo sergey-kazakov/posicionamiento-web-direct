@@ -67,7 +67,7 @@ const ES: Dict = {
  El análisis se basa en datos de encuestas reales y combina evaluaciones de atributos, preferencias y técnicas de reducción dimensional (PCA y mapas directos).
  
  Guía rápida
-   1. Define las marcas y atributos del estudio en el modo Designer.
+   1. Define el tipo del producto, su marcas y atributos del estudio en el modo Designer.
    2. Recoge datos de los participantes mediante un formulario externo (Google Forms).
    3. Importa los resultados en formato CSV para agregarlos y validarlos en la app.
    4. Como alternativa, puedes trabajar en modo sandbox, introducir valores manualmente y guardar o cargar el estado del análisis en formato JSON.
@@ -87,13 +87,15 @@ const ES: Dict = {
   results: 'Resultados',
 
   brands: 'Marcas',
+  product: 'La categría del producto para estudiar',
+  productNote: 'Ejemplo: zumos, móviles, coches',
   attributes: 'Atributos',
   add: 'Añadir',
   name: 'Nombre',
   reversed: 'Inverso',
   priceNote: 'Para el precio, valores más bajos se interpretan como mejores.',
   attrNote:
-      'Cuando añadas un nuevo atributo, introduce siempre su nombre en español e inglés. Estos textos se usan en los cuestionarios y en los gráficos.',
+      'Cuando añadas la categoría del producto y un nuevo atributo, introduce siempre su nombre en español e inglés. Estos textos se usan en los cuestionarios y en los gráficos.',
     attrError:
       'Por favor, introduce el nombre del atributo en español e inglés.',
   
@@ -140,7 +142,7 @@ const EN: Dict = {
   The analysis is based on real survey data and integrates attribute evaluations, preferences, and dimensionality-reduction techniques (PCA and direct maps).
   
   Quick guide
-  1.  Define the brands and attributes of the study in Designer mode.
+  1.  Define the product category, brands and attributes of the study in Designer mode.
   2.  Collect responses from participants using an external survey (Google Forms).
   3.  Import the results in CSV format to aggregate and validate the data in the app.
   4.  Alternatively, you can work in sandbox mode, enter values manually, and save or load the analysis state using JSON files.
@@ -161,12 +163,14 @@ const EN: Dict = {
   
   brands: 'Brands',
   attributes: 'Attributes',
+  product: 'Studied Product Category',
+  productNote: 'Example: juices, smartphones, cars',
   add: 'Add',
   name: 'Name',
   reversed: 'Reversed',
   priceNote: 'For price, lower values are interpreted as better.',
   attrNote:
-    'When adding a new attribute, always provide both Spanish and English names. These labels are used in the survey and on the maps.',
+    'When adding a product category and a new attribute, always provide both Spanish and English names. These labels are used in the survey and on the maps.',
   attrError:
     'Please enter the attribute name in both Spanish and English.',
 
