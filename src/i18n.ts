@@ -73,9 +73,7 @@ const ES: Dict = {
    4. Como alternativa, puedes trabajar en modo sandbox, introducir valores manualmente y guardar o cargar el estado del análisis en formato JSON.
    5. Revisa los valores agregados y aplica los datos para generar los mapas.
    6. Explora los resultados en mapas perceptuales, mapas directos y tablas analíticas.
-   7. Exporta los resultados finales mediante Imprimir / PDF.
-  
-  Para más detalles, consulta el Manual Técnico.`,
+   7. Exporta los resultados finales mediante Imprimir / PDF.`,
 
   language: 'Idioma',
   es: 'Español',
@@ -117,6 +115,9 @@ const ES: Dict = {
   studentNameLabel: "Nombre del estudiante y/o grupo:",
   studentNamePlaceholder: "Introduzca el nombre",
   
+  homeManualText: 'Para más detalles, consulta el',
+  homeManualLink: 'Manual Técnico',
+  
   distToIdeal: 'Distancias a la marca IDEAL',
   benchmark: 'Marca de referencia',
   print: 'Imprimir / PDF',
@@ -145,9 +146,7 @@ const EN: Dict = {
   4.  Alternatively, you can work in sandbox mode, enter values manually, and save or load the analysis state using JSON files.
   5.  Review the aggregated values and apply them to generate the maps.
   6.  Analyse results through perceptual maps, direct maps, and analytical tables.
-  7.  Export the final outputs using Print / PDF.
-  
-  For more details, see the Technical Manual.`,
+  7.  Export the final outputs using Print / PDF.`,
 
   language: 'Language',
   es: 'Spanish',
@@ -188,6 +187,9 @@ const EN: Dict = {
   
   studentNameLabel: "Student and/or Group name:",
   studentNamePlaceholder: "Insert name",
+  
+  homeManualText: 'For more details, see the',
+  homeManualLink: 'Technical Manual',
   
   distToIdeal: 'Distances to IDEAL brand',
   benchmark: 'Benchmark brand',
