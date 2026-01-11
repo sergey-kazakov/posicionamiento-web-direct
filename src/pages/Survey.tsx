@@ -57,6 +57,7 @@ export function Survey() {
   const hasImportedData = dataSource === "imported";
   const [stagedResponses, setStagedResponses] = useState<any[] | null>(null);
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [surveyUrlInput, setSurveyUrlInput] = useState("");
   
   // ----- CSV import --------
   const [csvError, setCsvError] = useState<string | null>(null);
@@ -195,6 +196,22 @@ export function Survey() {
     };
   
     reader.readAsText(file);
+  };
+  
+  const applySurveyQR = () => {
+    if (!surveyUrlInput.trim()) {
+      alert(project.lang === "es"
+        ? "Inserta la URL del formulario"
+        : "Please insert the form URL");
+      return;
+    }
+  
+    setProject(prev => ({
+      ...prev,
+      surveySession: {
+        url: surveyUrlInput.trim(),
+      },
+    }));
   };
   
   const applyToMap = () => {
@@ -447,9 +464,39 @@ export function Survey() {
             </div>
           </div>
         
-          {/* --- SURVEY QR CODE --- */}
+          {/* --- SURVEY QR SETUP (INSTRUCTOR) --- */}
+          <div className="card" style={{ marginBottom: 12 }}>
+            <strong>
+              {project.lang === "es"
+                ? "QR del cuestionario (profesor)"
+                : "Survey QR (instructor)"}
+            </strong>
+          
+            <div style={{ fontSize: 13, marginTop: 8 }}>
+              <input
+                type="text"
+                placeholder={
+                  project.lang === "es"
+                    ? "Pega aquí la URL de tu Google Form"
+                    : "Paste your Google Form URL here"
+                }
+                value={surveyUrlInput}
+                onChange={(e) => setSurveyUrlInput(e.target.value)}
+                style={{ width: "100%", marginBottom: 8 }}
+              />
+          
+              <button className="btn btn-soft" onClick={applySurveyQR}>
+                {project.lang === "es" ? "Actualizar QR" : "Update QR"}
+              </button>
+            </div>
+          </div>
+          
+          {/* --- SURVEY QR CODE (STUDENTS) --- */}
           <div className="card" style={{ textAlign: "center" }}>
-            <SurveyQRCode lang={project.lang} />
+            <SurveyQRCode
+              lang={project.lang}
+              url={project.surveySession?.url}
+            />
           </div>
           
           {/* --- JSON IMPORT / EXPORT INFO --- */}

@@ -35,6 +35,11 @@ export type Project = {
   benchmark?: string;
   responses: SurveyResponse[];
   results?: any[];
+  
+  surveySession?: {
+	url?: string;        // ссылка Google Form
+	qrImage?: string;    // base64, если загрузили картинку
+  };
 
   directMapByAttributes?: {
 	selectedAttrIds: string[];

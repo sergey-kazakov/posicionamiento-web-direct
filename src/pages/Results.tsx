@@ -57,6 +57,7 @@ export function Results({ setView }: Props) {
     setProject(prev => ({
       ...prev,
       responses: [],
+      surveySession: undefined,
       prefMap: undefined,
       results: [],
       directMapByAttributes: {
