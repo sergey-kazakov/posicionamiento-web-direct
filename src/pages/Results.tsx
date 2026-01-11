@@ -116,9 +116,20 @@ export function Results({ setView }: Props) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <h3 className="screen-title" style={{ margin: 0 }}>
                 {project.lang === 'es'
-                  ? 'Resultados del análisis de posicionamiento de marcas'
-                  : 'Brands positioning analysis results'}
+                  ? 'Resultados del análisis de posicionamiento'
+                  : 'Brand positioning analysis'}
               </h3>
+              
+              {project.product?.[project.lang] && (
+                <div style={{ fontSize: 16, color: '#555' }}>
+                  <strong>
+                    {project.lang === 'es'
+                      ? 'Categoría de producto: '
+                      : 'Product category: '}
+                  </strong>
+                  {project.product[project.lang]}
+                </div>
+              )}
           
               <div
                 className="student-name-row"
@@ -165,9 +176,26 @@ export function Results({ setView }: Props) {
           >
             <h3 style={{ margin: 0 }}>
               {project.lang === 'es'
-                ? 'Resultados del análisis de posicionamiento de marcas'
-                : 'Brands positioning analysis results'}
+                ? 'Resultados del análisis de posicionamiento'
+                : 'Brand positioning analysis'}
             </h3>
+            
+            {project.product?.[project.lang] && (
+              <div
+                style={{
+                  fontSize: 15,
+                  marginTop: 6,
+                  textAlign: 'center',
+                }}
+              >
+                <strong>
+                  {project.lang === 'es'
+                    ? 'Categoría de producto: '
+                    : 'Product category: '}
+                </strong>
+                {project.product[project.lang]}
+              </div>
+            )}
 
             <div>              
               <div className="student-name-print">
