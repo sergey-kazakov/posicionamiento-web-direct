@@ -38,6 +38,8 @@ export default function DirectMapByAttributes() {
   const [pairs, setPairs] = useState<[string, string][]>([]);
  
   const [hoveredBrand, setHoveredBrand] = useState<string | null>(null);
+	  
+  const [pointZoom, setPointZoom] = useState(1);
 
   // ---------- HELPERS ----------
   function toggleAttr(id: string) {
@@ -61,7 +63,7 @@ export default function DirectMapByAttributes() {
 			: null,
 	  },
 	}));
-	}
+	}	
 	
 	function addToResults() {
 	  if (!activePair || points.length === 0) return;
@@ -147,12 +149,20 @@ export default function DirectMapByAttributes() {
   const idealPoint = useMemo(() => {
 	return points.find((p) => p.isIdeal) || null;
   }, [points]);
+  
+  const hoverPoint = useMemo(() => {
+	if (!hoveredBrand) return null;
+	return points.find(p => p.name === hoveredBrand) || null;
+  }, [hoveredBrand, points]);
 
-  function distanceToIdeal(p: { x: number; y: number }) {
-	if (!idealPoint) return null;
-	const dx = p.x - idealPoint.x;
-	const dy = p.y - idealPoint.y;
+  function distance(a: { x: number; y: number }, b: { x: number; y: number }) {
+	const dx = a.x - b.x;
+	const dy = a.y - b.y;
 	return Math.sqrt(dx * dx + dy * dy);
+  }
+  
+  function zoomCoord(value: number, center: number, zoom: number) {
+	return center + (value - center) * zoom;
   }
   
   function clamp(v: number, min: number, max: number) {
@@ -164,7 +174,7 @@ export default function DirectMapByAttributes() {
   const SVG_SIZE = 400; // Размер SVG в пикселях (оптимальный для экрана)
   const AXIS_LABEL_OFFSET = 20; // расстояние подписи от оси
   const AXIS_LABEL_FONT = 14;   // размер шрифта осей
-  const MARGIN = 5; // Отступы для осей и подписей
+  const MARGIN = 40; // Отступы для осей и подписей
   const PLOT_SIZE = SVG_SIZE - 2 * MARGIN; // Область для данных
   const PAD = 10; // // добавим “запас” вокруг, чтобы подписи/точки не резались
   const PLOT_MIN = MARGIN;
@@ -356,120 +366,176 @@ export default function DirectMapByAttributes() {
 					borderRadius: 12,
 					boxShadow: '0 6px 18px rgba(0,0,0,0.06)',
 					padding: 18,
-				
-					// ключевое: задаём понятную высоту области карты
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-					minHeight: SVG_SIZE + 40,
-				
-					// важно: НЕ режем подписи
-					overflow: 'visible',
+					minHeight: SVG_SIZE + 80,
+					overflow: 'hidden',
 				  }}
 				>
-				  <svg
-					width={SVG_SIZE}
-					height={SVG_SIZE}
-					viewBox={`${-PAD} ${-PAD} ${SVG_SIZE + 2 * PAD} ${SVG_SIZE + 2 * PAD}`}
-					style={{ overflow: 'visible' }}
-				  >		
-			  		{/* Y-axis label (left, centered) */}
-					<text
-					  x={PLOT_MIN - AXIS_LABEL_OFFSET}
-					  y={PLOT_CENTER}
-					  textAnchor="middle"
-					  fontSize={AXIS_LABEL_FONT}
-					  fill="#333"
-					  fontWeight="600"
-					  transform={`rotate(-90 ${PLOT_MIN - AXIS_LABEL_OFFSET} ${PLOT_CENTER})`}
+				  <div style={{ display: 'flex', justifyContent: 'center' }}>
+					<svg
+					  width={SVG_SIZE}
+					  height={SVG_SIZE}
+					  style={{ overflow: 'visible' }}
 					>
-					  {yLabel}
-					</text>
-			  
-					{/* X-axis label (bottom, centered) */}
-					<text
-					  x={PLOT_CENTER}
-					  y={PLOT_MAX + AXIS_LABEL_OFFSET}
-					  textAnchor="middle"
-					  fontSize={AXIS_LABEL_FONT}
-					  fill="#333"
-					  fontWeight="600"
-					>
-					  {xLabel}
-					</text>
-			  
-					{/* AXES */}
-					<line 
-					  x1={MARGIN} 
-					  y1={MARGIN} 
-					  x2={MARGIN} 
-					  y2={SVG_SIZE - MARGIN} 
-					  stroke="#111" 
-					  strokeWidth="2" 
-					/>
-					<line 
-					  x1={MARGIN} 
-					  y1={SVG_SIZE - MARGIN} 
-					  x2={SVG_SIZE - MARGIN} 
-					  y2={SVG_SIZE - MARGIN} 
-					  stroke="#111" 
-					  strokeWidth="2" 
-					/>
-			  
-					{/* POINTS */}
-					{points.map((p, i) => {
-					  const cx = MARGIN + p.x * PLOT_SIZE;
-					  const cy = SVG_SIZE - (MARGIN + p.y * PLOT_SIZE);
-			  
-					  const labelDx = cx > SVG_SIZE / 2 ? -14 : 14;
-					  const labelAnchor = cx > SVG_SIZE / 2 ? 'end' : 'start';
-			  
-					  const isHover = hoveredBrand === p.name;
-			  
-					  const r = p.isIdeal ? 9 : isHover ? 11 : 8;
-					  const fill = p.isIdeal ? '#9ca3af' : '#0077c8';
-					  const labelColor = p.isIdeal ? '#6b7280' : isHover ? '#000' : '#111';
-			  
-					  const dist = !p.isIdeal ? distanceToIdeal(p) : null;
-			  
-					  return (
-						<g
-						  key={i}
-						  onMouseEnter={() => setHoveredBrand(p.name)}
-						  onMouseLeave={() => setHoveredBrand(null)}
-						  style={{ cursor: 'default' }}
-						>
-						  <circle cx={cx} cy={cy} r={r} fill={fill} />
-			  
-						  <text
-							x={cx + labelDx}
-							y={cy - 13}
-							textAnchor={labelAnchor}
-							fontSize="14px"
-							fill={labelColor}
-							fontWeight="400"
+				  
+					  {/* Y-axis label */}
+					  <text
+						x={PLOT_MIN - AXIS_LABEL_OFFSET}
+						y={PLOT_CENTER}
+						textAnchor="middle"
+						fontSize={AXIS_LABEL_FONT}
+						fill="#333"
+						fontWeight="600"
+						transform={`rotate(-90 ${PLOT_MIN - AXIS_LABEL_OFFSET} ${PLOT_CENTER})`}
+					  >
+						{yLabel}
+					  </text>
+				  
+					  {/* X-axis label */}
+					  <text
+						x={PLOT_CENTER}
+						y={PLOT_MAX + AXIS_LABEL_OFFSET}
+						textAnchor="middle"
+						fontSize={AXIS_LABEL_FONT}
+						fill="#333"
+						fontWeight="600"
+					  >
+						{xLabel}
+					  </text>
+				  
+					  {/* AXES */}
+					  <line
+						x1={MARGIN}
+						y1={MARGIN}
+						x2={MARGIN}
+						y2={SVG_SIZE - MARGIN}
+						stroke="#111"
+						strokeWidth="2"
+					  />
+					  <line
+						x1={MARGIN}
+						y1={SVG_SIZE - MARGIN}
+						x2={SVG_SIZE - MARGIN}
+						y2={SVG_SIZE - MARGIN}
+						stroke="#111"
+						strokeWidth="2"
+					  />
+				  
+					  {/* HOVER DISTANCE VECTORS */}
+					  {hoverPoint &&
+						points
+						  .filter(p => p.name !== hoverPoint.name)
+						  .map((p, i) => {
+							const baseX1 = MARGIN + hoverPoint.x * PLOT_SIZE;
+							const baseY1 = SVG_SIZE - (MARGIN + hoverPoint.y * PLOT_SIZE);
+				  
+							const baseX2 = MARGIN + p.x * PLOT_SIZE;
+							const baseY2 = SVG_SIZE - (MARGIN + p.y * PLOT_SIZE);
+				  
+							const x1 = zoomCoord(baseX1, PLOT_CENTER, pointZoom);
+							const y1 = zoomCoord(baseY1, PLOT_CENTER, pointZoom);
+							const x2 = zoomCoord(baseX2, PLOT_CENTER, pointZoom);
+							const y2 = zoomCoord(baseY2, PLOT_CENTER, pointZoom);
+				  
+							const d = distance(hoverPoint, p);
+				  
+							return (
+							  <g key={`hover-vec-${i}`}>
+								<line
+								  x1={x1}
+								  y1={y1}
+								  x2={x2}
+								  y2={y2}
+								  stroke="#9ca3af"
+								  strokeWidth={1.5}
+								  strokeDasharray="4 4"
+								  opacity={0.85}
+								/>
+								<text
+								  x={(x1 + x2) / 2}
+								  y={(y1 + y2) / 2 - 6}
+								  textAnchor="middle"
+								  fontSize="12px"
+								  fill="#374151"
+								  fontWeight="500"
+								>
+								  {d.toFixed(2)}
+								</text>
+							  </g>
+							);
+						  })}
+				  
+					  {/* POINTS */}
+					  {points.map((p, i) => {
+						const baseCx = MARGIN + p.x * PLOT_SIZE;
+						const baseCy = SVG_SIZE - (MARGIN + p.y * PLOT_SIZE);
+				  
+						const cx = zoomCoord(baseCx, PLOT_CENTER, pointZoom);
+						const cy = zoomCoord(baseCy, PLOT_CENTER, pointZoom);
+				  
+						const labelDx = cx > SVG_SIZE / 2 ? -14 : 14;
+						const labelAnchor = cx > SVG_SIZE / 2 ? 'end' : 'start';
+				  
+						const isHover = hoveredBrand === p.name;
+				  
+						const r = p.isIdeal ? 9 : isHover ? 11 : 8;
+						const fill = p.isIdeal ? '#9ca3af' : '#0077c8';
+						const labelColor = p.isIdeal ? '#6b7280' : isHover ? '#000' : '#111';
+				  
+						return (
+						  <g
+							key={i}
+							onMouseEnter={() => setHoveredBrand(p.name)}
+							onMouseLeave={() => setHoveredBrand(null)}
 						  >
-							{p.name}
-						  </text>
-			  
-						  {isHover && !p.isIdeal && idealPoint && dist != null && (
-							<text 
-							  x={cx} 
-							  y={cy + 35} 
-							  textAnchor="middle" 
-							  fontSize="12px" 
-							  fill="#444" 
-							  fontWeight="500"
+							<circle cx={cx} cy={cy} r={r} fill={fill} />
+							<text
+							  x={cx + labelDx}
+							  y={cy - 13}
+							  textAnchor={labelAnchor}
+							  fontSize="14px"
+							  fill={labelColor}
 							>
-							  {project.lang === 'es'
-								? `Distancia al IDEAL: ${dist.toFixed(2)}`
-								: `Distance to IDEAL: ${dist.toFixed(2)}`}
+							  {p.name}
 							</text>
-						  )}
-						</g>
-					  );
-					})}
-				  </svg>
+						  </g>
+						);
+					  })}
+					</svg>
+				  </div>
+				  
+				  {/* ZOOM SLIDER */}
+				  <div
+					style={{
+					  marginTop: 10,
+					  paddingTop: 8,
+					  borderTop: '1px solid #eef2f6',
+					  textAlign: 'center',
+					}}
+				  >
+					<label
+					  style={{
+						fontSize: 12,
+						color: '#555',
+						display: 'inline-flex',
+						alignItems: 'center',
+						gap: 10,
+					  }}
+					>
+					  Zoom
+					  <input
+						type="range"
+						min={0.5}
+						max={2.5}
+						step={0.05}
+						value={pointZoom}
+						onChange={(e) => setPointZoom(Number(e.target.value))}
+						style={{ width: 140 }}
+					  />
+					  <span style={{ fontSize: 12, minWidth: 42 }}>
+						×{pointZoom.toFixed(2)}
+					  </span>
+					</label>
+				  </div>
 				</div>
 
 				{/* RIGHT COLUMN - INTERPRETATION AND BUTTON (NO BACKGROUND) */}
