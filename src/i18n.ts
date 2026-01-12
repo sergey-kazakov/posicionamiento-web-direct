@@ -19,6 +19,10 @@ type Dict = {
 
   brands: string;
   attributes: string;
+  product: string;
+  productNote: string;
+  homeManualText: string;
+  homeManualLink: string;
   add: string;
   name: string;
   reversed: string;
@@ -87,7 +91,7 @@ const ES: Dict = {
   results: 'Resultados',
 
   brands: 'Marcas',
-  product: 'La categría del producto para estudiar',
+  product: 'La categoría del producto para estudiar',
   productNote: 'Ejemplo: zumos, móviles, coches',
   attributes: 'Atributos',
   add: 'Añadir',

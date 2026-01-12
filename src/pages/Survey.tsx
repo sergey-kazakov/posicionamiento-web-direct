@@ -102,6 +102,7 @@ export function Survey() {
     const sandboxResponse = {
       performance: perf,
       preference: pref,
+      importance: {},
       ts: Date.now(),
     };
   
@@ -216,14 +217,20 @@ export function Survey() {
   
   const applyToMap = () => {
     if (stagedResponses && stagedResponses.length) {
+      const normalized = stagedResponses.map((r) => ({
+        ...r,
+        importance: r.importance ?? {},   // ← ГАРАНТИЯ ТИПА
+      }));
+  
       setProject((prev) => ({
         ...prev,
-        responses: stagedResponses,
+        responses: normalized,
       }));
     } else {
       const sandboxResponse = {
         performance: perf,
         preference: pref,
+        importance: {},   // ← ОБЯЗАТЕЛЬНО
         ts: Date.now(),
       };
   
@@ -235,7 +242,6 @@ export function Survey() {
       setDataSource("manual");
     }
   
-    // ✅ MODAL ВСЕГДА ПОСЛЕ APPLY
     setShowApplyModal(true);
   };
   
